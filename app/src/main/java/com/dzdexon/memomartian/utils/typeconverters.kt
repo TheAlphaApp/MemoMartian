@@ -4,12 +4,19 @@ import androidx.room.TypeConverter
 
 class MyTypeConverters {
     @TypeConverter
-    fun fromStringToList(value: String?) : List<String> {
-        return value?.split(",")?.map { it.trim()} ?: emptyList()
+    fun fromStringToListOfInt(value: String?): List<Int> {
+        if (value?.isNotBlank() == true ) {
+            return value.split(",").map {
+                it.toInt()
+            }
+        } else {
+            return emptyList<Int>()
+        }
+
     }
 
     @TypeConverter
-    fun fromStringToList(list: List<String>): String {
+    fun fromListOfIntToString(list: List<Int>): String {
         return list.joinToString(separator = ",")
     }
 }

@@ -8,5 +8,5 @@ data class Note(
     val id: Int = 0,
     val title: String,
     val content: String,
-    val tags: List<String>,
+    val tags: List<Int>,
 )

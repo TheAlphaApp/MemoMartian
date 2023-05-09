@@ -5,7 +5,7 @@ data class NoteUiState(
     val id: Int = 0,
     val title: String = "",
     val content: String = "",
-    val tags: List<String> = emptyList(),
+    val tags: List<Int> = emptyList<Int>(),
     val isValid: Boolean = false,
 )
 

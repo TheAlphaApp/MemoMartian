@@ -42,8 +42,8 @@ fun NoteInputForm(
     onValueChange: (NoteUiState) -> Unit = {},
     onSaveClick: () -> Unit,
     tagList: List<Tag>,
-    addTagToNote: (String) -> Unit,
-    removeTagFromNote: (String) -> Unit,
+    addTagToNote: (Tag) -> Unit,
+    removeTagFromNote: (Tag) -> Unit,
 ) {
     var showTagDialog by rememberSaveable {
         mutableStateOf(false)
@@ -80,7 +80,13 @@ fun NoteInputForm(
             textStyle = MaterialTheme.typography.bodyLarge
 
         )
-        TagView(noteUiState.tags)
+        TagView(
+            tagList.filter { tag ->
+                noteUiState.tags.contains(tag.id)
+            }.map {
+                it.tagName
+            }
+        )
         ElevatedButton(
             onClick = {
                 showTagDialog = !showTagDialog
@@ -126,12 +132,12 @@ fun NoteInputForm(
                             label = {
                                 Text(text = tag.tagName)
                             },
-                            selected = noteUiState.tags.contains(tag.tagName),
+                            selected = noteUiState.tags.contains(tag.id),
                             onClick = {
-                                if (noteUiState.tags.contains(tag.tagName)) {
-                                    removeTagFromNote(tag.tagName)
+                                if (noteUiState.tags.contains(tag.id)) {
+                                    removeTagFromNote(tag)
                                 } else {
-                                    addTagToNote(tag.tagName)
+                                    addTagToNote(tag)
                                 }
                             }
                         )

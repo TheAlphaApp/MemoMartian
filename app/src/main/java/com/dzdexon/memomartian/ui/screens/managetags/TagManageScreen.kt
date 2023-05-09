@@ -76,7 +76,9 @@ fun TagManageScreen(
                 canNavigateBack = true,
                 actions = {
                     Button(
-                        onClick = { showTagAddDialog = !showTagAddDialog }) {
+                        onClick = {
+                            newTagString = ""
+                            showTagAddDialog = !showTagAddDialog }) {
                         Text("+ Add Tag")
                     }
                 }

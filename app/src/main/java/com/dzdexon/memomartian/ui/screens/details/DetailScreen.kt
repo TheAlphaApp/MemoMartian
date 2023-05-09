@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import com.dzdexon.memomartian.navigation.NavigationDestination
+import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
 
 object DetailScreenDestination : NavigationDestination {
     override val route: String = "detail_screen"
@@ -32,9 +33,11 @@ fun DetailScreen(
     navigateToEditScreen: (Int) -> Unit,
     navigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
-    viewModel: DetailScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModelDetail: DetailScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val note = viewModel.uiState.collectAsState()
+    val note = viewModelDetail.uiState.collectAsState()
+    val tagList = viewModelTag.tagState.collectAsState()
     Scaffold(
         topBar = {
             NoteTopAppBar(
@@ -51,13 +54,18 @@ fun DetailScreen(
     ) { innerPadding ->
         Card(
             modifier = modifier
-                .padding(innerPadding).padding(16.dp)
+                .padding(innerPadding)
+                .padding(16.dp)
                 .fillMaxWidth(),
         ) {
             Column(Modifier.padding(16.dp)) {
                 Text(text = note.value.title, style = MaterialTheme.typography.titleMedium)
                 Text(text = note.value.content, style = MaterialTheme.typography.bodyMedium)
-                note.value.tags.forEach { tag ->
+                tagList.value.tagList.filter { tag ->
+                    note.value.tags.contains(tag.id)
+                }.map {
+                    it.tagName
+                }.forEach { tag ->
                     Text(text = tag, style = MaterialTheme.typography.labelSmall)
                 }
             }

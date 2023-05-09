@@ -29,7 +29,7 @@ class TagManageViewModel(private val notesRepository: NotesRepository) : ViewMod
     }
 
     private fun validateTagString(tagString: String): Boolean {
-        var isTagExist = tagState.value.tagList.map {
+        val isTagExist = tagState.value.tagList.map {
             it.tagName.trim()
         }.contains(tagString) || tagString.trim() == "All"
         return tagString.isNotBlank() && tagString.isNotEmpty() && !isTagExist
