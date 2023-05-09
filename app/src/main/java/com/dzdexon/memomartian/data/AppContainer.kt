@@ -1,6 +1,8 @@
 package com.dzdexon.memomartian.data
 
 import android.content.Context
+import com.dzdexon.memomartian.repository.NotesRepository
+import com.dzdexon.memomartian.repository.OfflineNotesRepository
 
 /**
  * App container for Dependency injection.

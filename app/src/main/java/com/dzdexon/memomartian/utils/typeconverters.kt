@@ -1,4 +1,4 @@
-package com.dzdexon.memomartian.data
+package com.dzdexon.memomartian.utils
 
 import androidx.room.TypeConverter
 

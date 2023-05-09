@@ -1,15 +1,16 @@
-package com.dzdexon.memomartian.screens.home
+package com.dzdexon.memomartian.ui.screens.home
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzdexon.memomartian.data.NotesRepository
+import com.dzdexon.memomartian.repository.NotesRepository
 import com.dzdexon.memomartian.model.Note
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class HomeViewModel(notesRepository: NotesRepository) : ViewModel() {
+class HomeViewModel(private val notesRepository: NotesRepository) : ViewModel() {
     /**
      * Holds home ui state. The list of items are retrieved from [NotesRepository] and mapped to
      * [HomeUiState]

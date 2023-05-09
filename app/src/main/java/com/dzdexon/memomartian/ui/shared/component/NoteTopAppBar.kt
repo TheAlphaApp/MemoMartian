@@ -1,4 +1,4 @@
-package com.dzdexon.memomartian.component
+package com.dzdexon.memomartian.ui.shared.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack

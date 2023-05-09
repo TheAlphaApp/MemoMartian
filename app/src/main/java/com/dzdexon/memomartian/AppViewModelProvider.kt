@@ -5,11 +5,13 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.dzdexon.memomartian.screens.create.CreateScreenViewModel
-import com.dzdexon.memomartian.screens.details.DetailScreenViewModel
-import com.dzdexon.memomartian.screens.edit.EditScreenViewModel
-import com.dzdexon.memomartian.screens.home.HomeViewModel
+import com.dzdexon.memomartian.ui.screens.create.CreateScreenViewModel
+import com.dzdexon.memomartian.ui.screens.details.DetailScreenViewModel
+import com.dzdexon.memomartian.ui.screens.edit.EditScreenViewModel
+import com.dzdexon.memomartian.ui.screens.home.HomeViewModel
 import android.app.Application
+import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
+
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
  */
@@ -36,6 +38,11 @@ object AppViewModelProvider {
         initializer {
             DetailScreenViewModel(
                 this.createSavedStateHandle(),
+                notesApplication().container.notesRepository
+            )
+        }
+        initializer {
+            TagManageViewModel(
                 notesApplication().container.notesRepository
             )
         }

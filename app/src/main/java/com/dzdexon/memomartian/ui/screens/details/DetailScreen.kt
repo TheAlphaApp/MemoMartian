@@ -1,4 +1,4 @@
-package com.dzdexon.memomartian.screens.details
+package com.dzdexon.memomartian.ui.screens.details
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
-import com.dzdexon.memomartian.component.NoteTopAppBar
+import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import com.dzdexon.memomartian.navigation.NavigationDestination
 
 object DetailScreenDestination : NavigationDestination {

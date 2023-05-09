@@ -7,14 +7,16 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.dzdexon.memomartian.screens.create.CreateScreen
-import com.dzdexon.memomartian.screens.create.CreateScreenDestination
-import com.dzdexon.memomartian.screens.details.DetailScreen
-import com.dzdexon.memomartian.screens.details.DetailScreenDestination
-import com.dzdexon.memomartian.screens.edit.EditScreen
-import com.dzdexon.memomartian.screens.edit.EditScreenDestination
-import com.dzdexon.memomartian.screens.home.HomeDestination
-import com.dzdexon.memomartian.screens.home.HomeScreen
+import com.dzdexon.memomartian.ui.screens.create.CreateScreen
+import com.dzdexon.memomartian.ui.screens.create.CreateScreenDestination
+import com.dzdexon.memomartian.ui.screens.details.DetailScreen
+import com.dzdexon.memomartian.ui.screens.details.DetailScreenDestination
+import com.dzdexon.memomartian.ui.screens.edit.EditScreen
+import com.dzdexon.memomartian.ui.screens.edit.EditScreenDestination
+import com.dzdexon.memomartian.ui.screens.home.HomeDestination
+import com.dzdexon.memomartian.ui.screens.home.HomeScreen
+import com.dzdexon.memomartian.ui.screens.managetags.TagManageDestination
+import com.dzdexon.memomartian.ui.screens.managetags.TagManageScreen
 
 
 @Composable
@@ -33,12 +35,16 @@ fun NotesAppNavHost(
                     navController.navigate(CreateScreenDestination.route)
 
                 },
+                navigateToTagManageScreen = {
+                    navController.navigate(TagManageDestination.route)
+                },
                 navigateToNoteDetail = {
                     navController.navigate("${DetailScreenDestination.route}/${it}")
                 }
             )
         }
-        composable(route = EditScreenDestination.routeWithArgs,
+        composable(
+            route = EditScreenDestination.routeWithArgs,
             arguments = listOf(navArgument(EditScreenDestination.noteIdArgs) {
                 type = NavType.IntType
             })
@@ -62,7 +68,8 @@ fun NotesAppNavHost(
                 },
             )
         }
-        composable(route = DetailScreenDestination.routeWithArgs,
+        composable(
+            route = DetailScreenDestination.routeWithArgs,
             arguments = listOf(navArgument(DetailScreenDestination.noteIdArgs) {
                 type = NavType.IntType
             })
@@ -71,6 +78,13 @@ fun NotesAppNavHost(
                 navigateToEditScreen = {
                     navController.navigate("${EditScreenDestination.route}/${it}")
                 },
+                navigateUp = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(route = TagManageDestination.route) {
+            TagManageScreen(
                 navigateUp = {
                     navController.navigateUp()
                 }

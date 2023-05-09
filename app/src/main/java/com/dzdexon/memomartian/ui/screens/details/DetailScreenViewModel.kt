@@ -1,11 +1,11 @@
-package com.dzdexon.memomartian.screens.details
+package com.dzdexon.memomartian.ui.screens.details
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzdexon.memomartian.data.NotesRepository
-import com.dzdexon.memomartian.screens.create.NoteUiState
-import com.dzdexon.memomartian.screens.create.toNoteUiState
+import com.dzdexon.memomartian.model.NoteUiState
+import com.dzdexon.memomartian.model.toNoteUiState
+import com.dzdexon.memomartian.repository.NotesRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -38,18 +38,3 @@ class DetailScreenViewModel(
         private const val TIMEOUT_MILLIS = 5_000L
     }
 }
-
-//
-//data class LocalNote(
-//    val id: Int = 0,
-//    val title: String = "",
-//    val content: String = "",
-//    val tags: List<String> = listOf(),
-//)
-//
-//fun Note.toLocalNote(): LocalNote = LocalNote(
-//    id = id,
-//    title = title,
-//    content = content,
-//    tags = tags,
-//)
