@@ -43,7 +43,7 @@ object AppViewModelProvider {
         }
         initializer {
             TagManageViewModel(
-                notesApplication().container.notesRepository
+                notesApplication().container.tagRepository
             )
         }
     }

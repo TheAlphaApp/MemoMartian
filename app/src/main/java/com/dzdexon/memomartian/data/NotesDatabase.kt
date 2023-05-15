@@ -17,7 +17,7 @@ import com.dzdexon.memomartian.utils.MyTypeConverters
 @Database(entities = [Note::class, Tag::class], version = 1, exportSchema = false)
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun notesDao(): NotesDao
-
+    abstract fun tagDao(): TagDao
     companion object {
         @Volatile
         private var Instance: NotesDatabase? = null
