@@ -14,6 +14,7 @@ import com.dzdexon.memomartian.repository.NotesRepository
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
 
 class EditScreenViewModel(
     savedStateHandle: SavedStateHandle,
@@ -60,6 +61,7 @@ class EditScreenViewModel(
 
     suspend fun updateNote() {
         if (validateInput()) {
+            noteUiState = noteUiState.copy(lastUpdate = OffsetDateTime.now())
             notesRepository.updateNote(noteUiState.toNote())
         }
     }

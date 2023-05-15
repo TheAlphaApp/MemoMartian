@@ -14,7 +14,7 @@ import com.dzdexon.memomartian.utils.MyTypeConverters
  * Database class with a singleton INSTANCE object.
  */
 @TypeConverters(MyTypeConverters::class)
-@Database(entities = [Note::class, Tag::class], version = 3, exportSchema = false)
+@Database(entities = [Note::class, Tag::class], version = 1, exportSchema = false)
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun notesDao(): NotesDao
 

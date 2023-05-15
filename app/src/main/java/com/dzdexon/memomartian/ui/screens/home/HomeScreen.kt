@@ -40,6 +40,8 @@ import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
+import com.dzdexon.memomartian.utils.HelperFunctions
+import java.time.format.DateTimeFormatter
 
 object HomeDestination : NavigationDestination {
     override val route: String = "home"
@@ -152,8 +154,11 @@ fun HomeBody(
                     .clickable {
                         onNoteClick(note.id)
                     }) {
+
                     Column(Modifier.padding(16.dp)) {
                         Text(text = note.title, style = MaterialTheme.typography.titleMedium)
+
+                        Text(text = HelperFunctions.formatOffsetDateTime(note.lastUpdate) ?: "", style = MaterialTheme.typography.titleMedium)
                         Text(text = note.content, style = MaterialTheme.typography.bodyMedium)
 
                         tagsList.filter {

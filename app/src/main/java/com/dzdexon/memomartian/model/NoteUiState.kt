@@ -1,5 +1,6 @@
 package com.dzdexon.memomartian.model
 
+import java.time.OffsetDateTime
 
 data class NoteUiState(
     val id: Int = 0,
@@ -7,6 +8,7 @@ data class NoteUiState(
     val content: String = "",
     val tags: List<Int> = emptyList<Int>(),
     val isValid: Boolean = false,
+    val lastUpdate: OffsetDateTime? = null
 )
 
 /**
@@ -16,7 +18,8 @@ fun Note.toNoteUiState(isValid: Boolean): NoteUiState = NoteUiState(
     title = title,
     content = content,
     tags = tags,
-    isValid = isValid
+    isValid = isValid,
+    lastUpdate = lastUpdate
 )
 
 /**
@@ -25,5 +28,6 @@ fun NoteUiState.toNote(): Note = Note(
     id = id,
     title = title,
     content = content,
-    tags = tags
+    tags = tags,
+    lastUpdate = lastUpdate
 )

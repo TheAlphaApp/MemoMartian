@@ -8,6 +8,8 @@ import com.dzdexon.memomartian.model.NoteUiState
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.model.toNote
 import com.dzdexon.memomartian.repository.NotesRepository
+import java.time.Clock
+import java.time.OffsetDateTime
 
 class CreateScreenViewModel(private val notesRepository: NotesRepository) : ViewModel() {
     var noteUiState by mutableStateOf(NoteUiState())
@@ -36,6 +38,9 @@ class CreateScreenViewModel(private val notesRepository: NotesRepository) : View
     }
     suspend fun saveNote() {
         if (validateInput()) {
+            noteUiState = noteUiState.copy(
+                lastUpdate = OffsetDateTime.now()
+            )
             notesRepository.createNote(noteUiState.toNote())
         }
     }
