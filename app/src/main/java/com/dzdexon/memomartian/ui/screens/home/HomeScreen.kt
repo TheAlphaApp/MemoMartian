@@ -3,35 +3,49 @@ package com.dzdexon.memomartian.ui.screens.home
 //import androidx.compose.foundation.lazy.LazyColumn
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
@@ -39,9 +53,7 @@ import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
-import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
-import com.dzdexon.memomartian.utils.HelperFunctions
-import java.time.format.DateTimeFormatter
+import com.dzdexon.memomartian.ui.shared.component.NoteCard
 
 object HomeDestination : NavigationDestination {
     override val route: String = "home"
@@ -53,6 +65,7 @@ fun HomeScreen(
     navigateToCreateNote: () -> Unit,
     navigateToNoteDetail: (Int) -> Unit,
     navigateToTagManageScreen: () -> Unit,
+    navigateToSearchScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModelHome: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -61,7 +74,9 @@ fun HomeScreen(
     val tagState by viewModelTag.tagState.collectAsState()
     Scaffold(
         topBar = {
-            NoteTopAppBar(canNavigateBack = false, title = "Memo Martian")
+            SearchBar(
+                onTap = navigateToSearchScreen
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -74,6 +89,7 @@ fun HomeScreen(
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
+
         },
 
         ) { innerPadding ->
@@ -103,12 +119,10 @@ fun HomeBody(
         mutableStateOf<Tag>(ALL_TAG)
     }
     val newTagsList = listOf(ALL_TAG) + tagsList
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Top
     ) {
-
         LazyRow(
             modifier = Modifier
                 .padding(horizontal = 16.dp),
@@ -132,6 +146,7 @@ fun HomeBody(
             modifier = Modifier.padding(horizontal = 8.dp),
             label = {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                Text(text = "Manage Tags")
 
             },
             onClick = {
@@ -141,42 +156,86 @@ fun HomeBody(
 
         LazyVerticalStaggeredGrid(
             modifier = Modifier
-                .padding(8.dp),
+                .padding(horizontal = 8.dp),
             columns = StaggeredGridCells.Fixed(2),
         ) {
             items(items = notesList.filter { note ->
                 if (selectedTag == ALL_TAG) true
                 else note.tags.contains(selectedTag.id)
             }, key = { it.id }) { note ->
-                Card(modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-                    .clickable {
-                        onNoteClick(note.id)
-                    }) {
-
-                    Column(Modifier.padding(16.dp)) {
-                        Text(text = note.title, style = MaterialTheme.typography.titleMedium)
-
-                        Text(text = HelperFunctions.formatOffsetDateTime(note.lastUpdate) ?: "", style = MaterialTheme.typography.titleMedium)
-                        Text(text = note.content, style = MaterialTheme.typography.bodyMedium)
-
-                        tagsList.filter {
-                            note.tags.contains(
-                                it.id
-                            )
-                        }.map { filteredTag ->
-                            filteredTag.tagName
-                        }.forEach {
-                            Text(text = it, style = MaterialTheme.typography.labelSmall)
-                        }
-                    }
-                }
+                NoteCard(
+                    note = note,
+                    tagsList = tagsList,
+                    onClick = onNoteClick
+                )
             }
         }
     }
 
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBar(
+    editable: Boolean = false,
+    onTap: () -> Unit = {},
+    editableContent: @Composable () -> Unit = {},
+
+    ) {
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+    ) {
+        Box(modifier = Modifier
+            .clip(shape = RoundedCornerShape(40.dp))
+            .clickable {
+                onTap()
+            }
+            .background(color = MaterialTheme.colorScheme.primaryContainer)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search Icon",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                if (editable) {
+                    editableContent()
+                } else {
+                    TextField(
+                        enabled = false,
+                        value = "",
+                        onValueChange = { },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        placeholder = {
+                            Text(
+                                "Search Your Notes",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        singleLine = true,
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            containerColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            disabledPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        ),
+                        textStyle = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 
 

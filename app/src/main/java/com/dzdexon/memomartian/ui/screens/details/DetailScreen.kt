@@ -1,10 +1,13 @@
 package com.dzdexon.memomartian.ui.screens.details
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,6 +42,7 @@ fun DetailScreen(
     val note = viewModelDetail.uiState.collectAsState()
     val tagList = viewModelTag.tagState.collectAsState()
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
         topBar = {
             NoteTopAppBar(
                 canNavigateBack = canNavigateBack,
@@ -59,14 +63,20 @@ fun DetailScreen(
                 .fillMaxWidth(),
         ) {
             Column(Modifier.padding(16.dp)) {
-                Text(text = note.value.title, style = MaterialTheme.typography.titleMedium)
-                Text(text = note.value.content, style = MaterialTheme.typography.bodyMedium)
+                Text(text = note.value.title, style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = note.value.content, style = MaterialTheme.typography.bodyLarge)
                 tagList.value.tagList.filter { tag ->
                     note.value.tags.contains(tag.id)
                 }.map {
                     it.tagName
                 }.forEach { tag ->
-                    Text(text = tag, style = MaterialTheme.typography.labelSmall)
+                   FilterChip(
+                       label = {
+                               Text(text = tag)
+                       },
+                       
+                       selected = true, onClick = { }) 
                 }
             }
         }

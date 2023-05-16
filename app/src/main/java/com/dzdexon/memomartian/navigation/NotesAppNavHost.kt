@@ -17,6 +17,8 @@ import com.dzdexon.memomartian.ui.screens.home.HomeDestination
 import com.dzdexon.memomartian.ui.screens.home.HomeScreen
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageDestination
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageScreen
+import com.dzdexon.memomartian.ui.screens.search.SearchScreen
+import com.dzdexon.memomartian.ui.screens.search.SearchScreenDestination
 
 
 @Composable
@@ -40,7 +42,10 @@ fun NotesAppNavHost(
                 },
                 navigateToNoteDetail = {
                     navController.navigate("${DetailScreenDestination.route}/${it}")
-                }
+                },
+                navigateToSearchScreen = {
+                    navController.navigate(SearchScreenDestination.route)
+                },
             )
         }
         composable(
@@ -53,6 +58,9 @@ fun NotesAppNavHost(
                 navigateBack = {
                     navController.popBackStack()
                 },
+                navigateToTagManageScreen = {
+                    navController.navigate(TagManageDestination.route)
+                },
                 navigateUp = {
                     navController.navigateUp()
                 }
@@ -62,6 +70,9 @@ fun NotesAppNavHost(
             CreateScreen(
                 navigateBack = {
                     navController.popBackStack()
+                },
+                navigateToTagManageScreen = {
+                    navController.navigate(TagManageDestination.route)
                 },
                 navigateUp = {
                     navController.navigateUp()
@@ -89,6 +100,9 @@ fun NotesAppNavHost(
                     navController.navigateUp()
                 }
             )
+        }
+        composable(route = SearchScreenDestination.route) {
+            SearchScreen()
         }
     }
 

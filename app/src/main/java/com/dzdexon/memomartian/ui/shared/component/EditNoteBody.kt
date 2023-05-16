@@ -22,6 +22,7 @@ fun EditNoteBody(
     onSaveClick: () -> Unit,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
+    navigateToTagManageScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -42,6 +43,7 @@ fun EditNoteBody(
                 addTagToNote = addTagToNote,
                 removeTagFromNote = removeTagFromNote,
                 onSaveClick = onSaveClick,
+                navigateToTagManageScreen = navigateToTagManageScreen
             )
 
         }

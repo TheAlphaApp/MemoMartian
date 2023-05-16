@@ -11,6 +11,7 @@ import com.dzdexon.memomartian.ui.screens.edit.EditScreenViewModel
 import com.dzdexon.memomartian.ui.screens.home.HomeViewModel
 import android.app.Application
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
+import com.dzdexon.memomartian.ui.screens.search.SearchViewModel
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
@@ -44,6 +45,11 @@ object AppViewModelProvider {
         initializer {
             TagManageViewModel(
                 notesApplication().container.tagRepository
+            )
+        }
+        initializer {
+            SearchViewModel(
+                notesApplication().container.notesRepository
             )
         }
     }

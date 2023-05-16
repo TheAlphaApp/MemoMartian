@@ -9,10 +9,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
-import com.dzdexon.memomartian.ui.shared.component.EditNoteBody
-import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
+import com.dzdexon.memomartian.ui.shared.component.EditNoteBody
+import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import kotlinx.coroutines.launch
 
 object CreateScreenDestination : NavigationDestination {
@@ -26,6 +26,7 @@ fun CreateScreen(
     navigateBack: () -> Unit,
     navigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
+    navigateToTagManageScreen: () -> Unit,
     viewModelCreate: CreateScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -54,17 +55,18 @@ fun CreateScreen(
                     navigateBack()
                 }
             },
-            addTagToNote = {tag ->
+            addTagToNote = { tag ->
                 coroutineScope.launch {
                     viewModelCreate.updateTagInNewNote(tag)
                 }
             },
-            removeTagFromNote = {tag ->
+            removeTagFromNote = { tag ->
                 coroutineScope.launch {
                     viewModelCreate.updateTagInNewNote(tag, remove = true)
                 }
             },
             tagList = tagState.value.tagList,
+            navigateToTagManageScreen = navigateToTagManageScreen,
             modifier = modifier.padding(innerPadding)
         )
 

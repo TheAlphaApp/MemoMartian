@@ -12,10 +12,14 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -42,6 +46,7 @@ fun NoteInputForm(
     onValueChange: (NoteUiState) -> Unit = {},
     onSaveClick: () -> Unit,
     tagList: List<Tag>,
+    navigateToTagManageScreen: () -> Unit,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
 ) {
@@ -123,12 +128,11 @@ fun NoteInputForm(
             ) {
 
                 LazyVerticalStaggeredGrid(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
                     columns = StaggeredGridCells.Adaptive(100.dp)
                 ) {
                     items(items = tagList, key = { it.id }) { tag ->
                         FilterChip(
+                            modifier = Modifier.padding(horizontal = 8.dp),
                             label = {
                                 Text(text = tag.tagName)
                             },
@@ -145,6 +149,15 @@ fun NoteInputForm(
 
 
                 }
+                AssistChip(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    label = {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                        Text(text = "Manage Tags")
+                    },
+                    onClick = {
+                        navigateToTagManageScreen()
+                    })
             }
         }
     }

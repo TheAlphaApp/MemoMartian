@@ -15,6 +15,8 @@ interface NotesDao {
 
     @Query("SELECT * FROM notes WHERE id = :id")
     fun getNote(id: Int) : Flow<Note>
+    @Query("SELECT * FROM notes WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%' ORDER BY datetime(lastUpdate) DESC")
+    fun searchNotes(query: String): Flow<List<Note>>
     // Specify the conflict strategy as IGNORE, when the user tries to add an
     // existing Item into the database Room ignores the conflict.
     @Insert(onConflict = OnConflictStrategy.IGNORE)
