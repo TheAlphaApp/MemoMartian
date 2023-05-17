@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Memo Martian"
-include ':app'
+include(":app")
