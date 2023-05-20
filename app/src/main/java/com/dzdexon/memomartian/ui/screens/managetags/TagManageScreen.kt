@@ -96,7 +96,7 @@ fun TagManageScreen(
             items(items = tagList, key = { it.id }) { tag ->
                 ListItem(
 
-                    headlineText = {
+                    headlineContent = {
                         Text(text = tag.tagName)
                     },
                     leadingContent = {
@@ -145,11 +145,12 @@ fun TagManageScreen(
                     placeholder = { Text("Add Tag") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    colors = TextFieldDefaults.textFieldColors(
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        containerColor = Color.Transparent
-
                     )
                 )
             }
@@ -184,11 +185,12 @@ fun TagManageScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    colors = TextFieldDefaults.textFieldColors(
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        containerColor = Color.Transparent
-
                     )
                 )
             }
