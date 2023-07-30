@@ -24,6 +24,8 @@ class AppDataContainer(private val context: Context): AppContainer {
     override val notesRepository: NotesRepository by lazy {
         OfflineNotesRepository(NotesDatabase.getDatabase(context).notesDao())
     }
+    /*
+    * Implementation for [NotesRepository]*/
     override val tagRepository: TagRepository by lazy {
         OfflineTagRepository(NotesDatabase.getDatabase(context).tagDao())
     }

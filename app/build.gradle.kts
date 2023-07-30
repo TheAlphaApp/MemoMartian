@@ -1,4 +1,4 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.gradlePlugin)
@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.dzdexon.memomartian"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.dzdexon.memomartian"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -64,7 +64,7 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
     //Gson
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.gson)
 
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit)
