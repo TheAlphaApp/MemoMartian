@@ -1,19 +1,13 @@
 package com.dzdexon.memomartian.ui.screens.home
-
-//import androidx.compose.foundation.lazy.LazyColumn
-
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -23,12 +17,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -59,7 +55,6 @@ object HomeDestination : NavigationDestination {
     override val route: String = "home"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navigateToCreateNote: () -> Unit,
@@ -80,8 +75,7 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = navigateToCreateNote,
-                modifier = Modifier.navigationBarsPadding()
+                onClick = navigateToCreateNote, modifier = Modifier.navigationBarsPadding()
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -105,7 +99,7 @@ fun HomeScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeBody(
     notesList: List<Note>,
@@ -116,47 +110,38 @@ fun HomeBody(
 ) {
     val ALL_TAG = Tag(id = 420373, tagName = "All")
     var selectedTag by remember {
-        mutableStateOf<Tag>(ALL_TAG)
+        mutableStateOf(ALL_TAG)
     }
     val newTagsList = listOf(ALL_TAG) + tagsList
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Top
+        modifier = modifier, verticalArrangement = Arrangement.Top
     ) {
         LazyRow(
-            modifier = Modifier
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(items = newTagsList, key = { it.id }) { tag ->
-                FilterChip(
-                    label = {
-                        Text(text = tag.tagName)
-                    },
-                    selected = tag == selectedTag,
-                    onClick = {
-                        selectedTag = tag
-                    })
+                FilterChip(label = {
+                    Text(text = tag.tagName)
+                }, selected = tag == selectedTag, onClick = {
+                    selectedTag = tag
+                })
             }
 
 
         }
 
-        AssistChip(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            label = {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-                Text(text = "Manage Tags")
+        AssistChip(modifier = Modifier.padding(horizontal = 8.dp), label = {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+            Text(text = "Manage Tags")
 
-            },
-            onClick = {
-                navigateToTagManageScreen()
+        }, onClick = {
+            navigateToTagManageScreen()
 
-            })
+        })
 
         LazyVerticalStaggeredGrid(
-            modifier = Modifier
-                .padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 8.dp),
             columns = StaggeredGridCells.Fixed(2),
         ) {
             items(items = notesList.filter { note ->
@@ -164,9 +149,7 @@ fun HomeBody(
                 else note.tags.contains(selectedTag.id)
             }, key = { it.id }) { note ->
                 NoteCard(
-                    note = note,
-                    tagsList = tagsList,
-                    onClick = onNoteClick
+                    note = note, tagsList = tagsList, onClick = onNoteClick
                 )
             }
         }
@@ -174,14 +157,13 @@ fun HomeBody(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     editable: Boolean = false,
     onTap: () -> Unit = {},
+    navigateUp: () -> Unit = {},
     editableContent: @Composable () -> Unit = {},
-
-    ) {
+) {
     Surface(
         color = MaterialTheme.colorScheme.surface,
         modifier = Modifier
@@ -197,13 +179,24 @@ fun SearchBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search Icon",
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(16.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+                if (editable) {
+                    IconButton(onClick = navigateUp) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back Icon",
+                            tint = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                } else {
+
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search Icon",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(start = 16.dp, end = 8.dp)
+                    )
+                }
+//                Spacer(modifier = Modifier.width(8.dp))
                 if (editable) {
                     editableContent()
                 } else {
@@ -214,17 +207,17 @@ fun SearchBar(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                         placeholder = {
                             Text(
-                                "Search Your Notes",
-                                style = MaterialTheme.typography.bodyLarge
+                                "Search Your Notes", style = MaterialTheme.typography.bodyLarge
                             )
                         },
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        colors = TextFieldDefaults.textFieldColors(
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
-                            containerColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent,
                             disabledPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         ),

@@ -1,5 +1,6 @@
 package com.dzdexon.memomartian.navigation
 
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -20,7 +21,6 @@ import com.dzdexon.memomartian.ui.screens.managetags.TagManageScreen
 import com.dzdexon.memomartian.ui.screens.search.SearchScreen
 import com.dzdexon.memomartian.ui.screens.search.SearchScreenDestination
 
-
 @Composable
 fun NotesAppNavHost(
     navController: NavHostController,
@@ -31,11 +31,14 @@ fun NotesAppNavHost(
         startDestination = HomeDestination.route,
         modifier = modifier
     ) {
-        composable(route = HomeDestination.route) {
+        composable(
+            route = HomeDestination.route,
+
+
+            ) {
             HomeScreen(
                 navigateToCreateNote = {
                     navController.navigate(CreateScreenDestination.route)
-
                 },
                 navigateToTagManageScreen = {
                     navController.navigate(TagManageDestination.route)
@@ -44,7 +47,7 @@ fun NotesAppNavHost(
                     navController.navigate("${DetailScreenDestination.route}/${it}")
                 },
                 navigateToSearchScreen = {
-                    navController.navigate(SearchScreenDestination.route)
+                        navController.navigate(SearchScreenDestination.route)
                 },
             )
         }
@@ -102,7 +105,11 @@ fun NotesAppNavHost(
             )
         }
         composable(route = SearchScreenDestination.route) {
-            SearchScreen()
+            SearchScreen(
+                navigateUp = {
+                    navController.navigateUp()
+                },
+            )
         }
     }
 

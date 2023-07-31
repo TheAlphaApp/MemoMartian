@@ -44,7 +44,8 @@ object SearchScreenDestination : NavigationDestination {
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateUp: () -> Unit
 ) {
     val searchText by viewModel.searchText.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
@@ -58,7 +59,7 @@ fun SearchScreen(
     }
     Scaffold(
         topBar = {
-            SearchBar(editable = true) {
+            SearchBar(editable = true, navigateUp = navigateUp) {
                 TextField(
                     value = searchText,
                     onValueChange = viewModel::onSearchTextChange,
