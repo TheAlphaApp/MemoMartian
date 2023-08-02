@@ -1,7 +1,10 @@
 package com.dzdexon.memomartian.ui.screens.details
 
+import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,8 +18,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import com.dzdexon.memomartian.navigation.NavigationDestination
@@ -63,6 +70,23 @@ fun DetailScreen(
                 .fillMaxWidth(),
         ) {
             Column(Modifier.padding(16.dp)) {
+
+                if (note.value.imageUri != null && note.value.imageUri!!.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(data = Uri.parse(note.value.imageUri))
+                                .build()
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxHeight(0.3f)
+                            .fillMaxWidth()
+                            .padding(6.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Text(text = note.value.title, style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = note.value.content, style = MaterialTheme.typography.bodyLarge)

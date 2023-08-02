@@ -1,4 +1,5 @@
 package com.dzdexon.memomartian.ui.screens.home
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -59,7 +59,6 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
     navigateToCreateNote: () -> Unit,
     navigateToNoteDetail: (Int) -> Unit,
-    navigateToTagManageScreen: () -> Unit,
     navigateToSearchScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModelHome: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
@@ -67,6 +66,7 @@ fun HomeScreen(
 ) {
     val homeUiState by viewModelHome.homeUiState.collectAsState()
     val tagState by viewModelTag.tagState.collectAsState()
+
     Scaffold(
         topBar = {
             SearchBar(
@@ -91,7 +91,6 @@ fun HomeScreen(
             notesList = homeUiState.notesList,
             tagsList = tagState.tagList,
             onNoteClick = navigateToNoteDetail,
-            navigateToTagManageScreen = navigateToTagManageScreen,
             modifier = modifier.padding(innerPadding),
         )
 
@@ -104,7 +103,6 @@ fun HomeScreen(
 fun HomeBody(
     notesList: List<Note>,
     tagsList: List<Tag>,
-    navigateToTagManageScreen: () -> Unit,
     onNoteClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -130,15 +128,6 @@ fun HomeBody(
 
 
         }
-
-        AssistChip(modifier = Modifier.padding(horizontal = 8.dp), label = {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-            Text(text = "Manage Tags")
-
-        }, onClick = {
-            navigateToTagManageScreen()
-
-        })
 
         LazyVerticalStaggeredGrid(
             modifier = Modifier.padding(horizontal = 8.dp),
@@ -168,14 +157,31 @@ fun SearchBar(
         color = MaterialTheme.colorScheme.surface,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+
     ) {
-        Box(modifier = Modifier
-            .clip(shape = RoundedCornerShape(40.dp))
-            .clickable {
-                onTap()
-            }
-            .background(color = MaterialTheme.colorScheme.primaryContainer)) {
+        Box(modifier =
+        if (editable) {
+            Modifier
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+
+                .clickable {
+                    onTap()
+                }
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
+
+        } else {
+            Modifier
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .clip(shape = RoundedCornerShape(40.dp))
+                .clickable {
+                    onTap()
+                }
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
+
+        }
+
+
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -196,7 +202,6 @@ fun SearchBar(
                         modifier = Modifier.padding(start = 16.dp, end = 8.dp)
                     )
                 }
-//                Spacer(modifier = Modifier.width(8.dp))
                 if (editable) {
                     editableContent()
                 } else {
@@ -228,7 +233,4 @@ fun SearchBar(
         }
     }
 }
-
-
-
 

@@ -16,8 +16,6 @@ import com.dzdexon.memomartian.ui.screens.edit.EditScreen
 import com.dzdexon.memomartian.ui.screens.edit.EditScreenDestination
 import com.dzdexon.memomartian.ui.screens.home.HomeDestination
 import com.dzdexon.memomartian.ui.screens.home.HomeScreen
-import com.dzdexon.memomartian.ui.screens.managetags.TagManageDestination
-import com.dzdexon.memomartian.ui.screens.managetags.TagManageScreen
 import com.dzdexon.memomartian.ui.screens.search.SearchScreen
 import com.dzdexon.memomartian.ui.screens.search.SearchScreenDestination
 
@@ -40,9 +38,6 @@ fun NotesAppNavHost(
                 navigateToCreateNote = {
                     navController.navigate(CreateScreenDestination.route)
                 },
-                navigateToTagManageScreen = {
-                    navController.navigate(TagManageDestination.route)
-                },
                 navigateToNoteDetail = {
                     navController.navigate("${DetailScreenDestination.route}/${it}")
                 },
@@ -61,9 +56,6 @@ fun NotesAppNavHost(
                 navigateBack = {
                     navController.popBackStack()
                 },
-                navigateToTagManageScreen = {
-                    navController.navigate(TagManageDestination.route)
-                },
                 navigateUp = {
                     navController.navigateUp()
                 }
@@ -73,9 +65,6 @@ fun NotesAppNavHost(
             CreateScreen(
                 navigateBack = {
                     navController.popBackStack()
-                },
-                navigateToTagManageScreen = {
-                    navController.navigate(TagManageDestination.route)
                 },
                 navigateUp = {
                     navController.navigateUp()
@@ -92,13 +81,6 @@ fun NotesAppNavHost(
                 navigateToEditScreen = {
                     navController.navigate("${EditScreenDestination.route}/${it}")
                 },
-                navigateUp = {
-                    navController.navigateUp()
-                }
-            )
-        }
-        composable(route = TagManageDestination.route) {
-            TagManageScreen(
                 navigateUp = {
                     navController.navigateUp()
                 }

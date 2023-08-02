@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <application
         android:name=".NotesApplication"
         android:allowBackup="true"
@@ -23,6 +23,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+<!--        &lt;!&ndash; Trigger Google Play services to install the back ported photo picker module. &ndash;&gt;-->
+<!--        <service android:name="com.google.android.gms.metadata.ModuleDependencies"-->
+<!--            android:enabled="false"-->
+<!--            android:exported="false"-->
+<!--            tools:ignore="MissingClass">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />-->
+<!--            </intent-filter>-->
+<!--            <meta-data android:name="photopicker_activity:0:required" android:value="" />-->
+<!--        </service>-->
     </application>
 
 </manifest>

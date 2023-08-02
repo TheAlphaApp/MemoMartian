@@ -31,7 +31,6 @@ fun EditScreen(
     navigateBack: () -> Unit,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
-    navigateToTagManageScreen: () -> Unit,
     viewModelEdit: EditScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -72,7 +71,6 @@ fun EditScreen(
                     viewModelEdit.updateTagInNote(tag, remove = true)
                 }
             },
-            navigateToTagManageScreen = navigateToTagManageScreen,
             modifier = modifier.padding(innerPadding)
         )
 

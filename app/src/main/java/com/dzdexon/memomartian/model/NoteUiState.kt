@@ -8,7 +8,8 @@ data class NoteUiState(
     val content: String = "",
     val tags: List<Int> = emptyList<Int>(),
     val isValid: Boolean = false,
-    val lastUpdate: OffsetDateTime? = null
+    val lastUpdate: OffsetDateTime? = null,
+    val imageUri: String? = null
 )
 
 /**
@@ -19,7 +20,8 @@ fun Note.toNoteUiState(isValid: Boolean): NoteUiState = NoteUiState(
     content = content,
     tags = tags,
     isValid = isValid,
-    lastUpdate = lastUpdate
+    lastUpdate = lastUpdate,
+    imageUri = imageUri
 )
 
 /**
@@ -29,5 +31,6 @@ fun NoteUiState.toNote(): Note = Note(
     title = title,
     content = content,
     tags = tags,
-    lastUpdate = lastUpdate
+    lastUpdate = lastUpdate,
+    imageUri = imageUri
 )

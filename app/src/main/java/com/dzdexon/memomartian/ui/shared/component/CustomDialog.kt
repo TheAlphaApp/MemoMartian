@@ -20,7 +20,7 @@ import androidx.compose.ui.window.Dialog
 fun CustomDialog(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
-    primaryButtonText: String,
+    primaryButtonText: String = "",
     primaryButtonEnabled: Boolean,
     onPrimaryButtonClick: () -> Unit,
     secondaryButtonText: String,

@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.dzdexon.memomartian.model.NoteUiState
 import com.dzdexon.memomartian.model.Tag
 
-
 @Composable
 fun EditNoteBody(
     noteUiState: NoteUiState,
@@ -22,7 +21,6 @@ fun EditNoteBody(
     onSaveClick: () -> Unit,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
-    navigateToTagManageScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -33,7 +31,9 @@ fun EditNoteBody(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp)
+
+               ,
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             NoteInputForm(
@@ -42,8 +42,7 @@ fun EditNoteBody(
                 tagList = tagList,
                 addTagToNote = addTagToNote,
                 removeTagFromNote = removeTagFromNote,
-                onSaveClick = onSaveClick,
-                navigateToTagManageScreen = navigateToTagManageScreen
+                onSaveClick = onSaveClick
             )
 
         }

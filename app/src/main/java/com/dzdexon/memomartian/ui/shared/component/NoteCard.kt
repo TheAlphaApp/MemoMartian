@@ -58,12 +58,13 @@ fun NoteCard(
             }.map { filteredTag ->
                 filteredTag.tagName
             }.forEach {
-               FilterChip(
-                   label = {
-                           Text(text = it)
-                   },
-                   selected = true, onClick = { /*TODO*/ })
+                FilterChip(
+                    label = {
+                        Text(text = it)
+                    },
+                    selected = true, onClick = { /*TODO*/ })
             }
         }
     }
 }
+

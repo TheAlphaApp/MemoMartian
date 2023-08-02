@@ -26,7 +26,6 @@ fun CreateScreen(
     navigateBack: () -> Unit,
     navigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
-    navigateToTagManageScreen: () -> Unit,
     viewModelCreate: CreateScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -66,7 +65,6 @@ fun CreateScreen(
                 }
             },
             tagList = tagState.value.tagList,
-            navigateToTagManageScreen = navigateToTagManageScreen,
             modifier = modifier.padding(innerPadding)
         )
 
