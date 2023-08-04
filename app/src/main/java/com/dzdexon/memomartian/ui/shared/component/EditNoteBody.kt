@@ -1,6 +1,5 @@
 package com.dzdexon.memomartian.ui.shared.component
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,15 +24,12 @@ fun EditNoteBody(
 ) {
 
     Surface(
-        color = MaterialTheme.colorScheme.surfaceVariant
+        color = MaterialTheme.colorScheme.background
     ) {
-        Log.d("TAGM", noteUiState.tags.toString())
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-
-               ,
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             NoteInputForm(

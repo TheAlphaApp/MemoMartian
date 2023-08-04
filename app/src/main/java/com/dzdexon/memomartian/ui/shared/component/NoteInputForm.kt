@@ -1,25 +1,34 @@
 package com.dzdexon.memomartian.ui.shared.component
 
-import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -36,16 +45,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import androidx.compose.ui.util.lerp
+import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.size.Scale
 import com.dzdexon.memomartian.NotesApplication
 import com.dzdexon.memomartian.model.NoteUiState
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageBottomSheet
+import kotlin.math.absoluteValue
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +82,7 @@ fun NoteInputForm(
     val pickMultipleMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
 
-            if (!uris.isNullOrEmpty()) {
+            if (uris.isNotEmpty()) {
                 uris.forEach { uri ->
                     NotesApplication.getUriPermission(uri)
                 }
@@ -79,14 +93,21 @@ fun NoteInputForm(
                     } else {
                         str.toString()
                     }
-                    print(imageString.toString())
+
+                    Log.d("Image URI", imageString.toString())
 
                 }
                 val oldString = noteUiState.imageUri
-                val newString = "$oldString,$imageString"
+                val newString = if (oldString != null) {
+                    "$oldString,$imageString"
+                } else {
+                    imageString
+                }
                 onValueChange(
                     noteUiState.copy(imageUri = newString)
                 )
+                Log.d("Note UI Image ", noteUiState.imageUri.toString())
+
             }
         }
 
@@ -108,21 +129,22 @@ fun NoteInputForm(
     ) {
         if (!noteUiState.imageUri.isNullOrEmpty()) {
             val imageList = noteUiState.imageUri.split(",").toTypedArray()
-            imageList.forEach { imageStr ->
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(data = Uri.parse(imageStr))
-                            .build()
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(300.dp)
-                        .padding(6.dp),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            BuildImageSlider(imageList.toList())
+//            imageList.forEach { imageStr ->
+//                Image(
+//                    painter = rememberAsyncImagePainter(
+//                        ImageRequest
+//                            .Builder(LocalContext.current)
+//                            .data(data = Uri.parse(imageStr))
+//                            .build()
+//                    ),
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .size(300.dp)
+//                        .padding(6.dp),
+//                    contentScale = ContentScale.Crop
+//                )
+//            }
 
         }
 
@@ -253,12 +275,84 @@ fun TagView(tagsList: List<String>) {
                 label = {
                     Text(text = tag)
                 },
-                selected = true,
+                selected = false,
                 enabled = true,
                 onClick = {
 
                 }
             )
         }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun BuildImageSlider(sliderList: List<String> = listOf()) {
+
+    val pagerState = rememberPagerState(
+        initialPage = 1,
+        initialPageOffsetFraction = 0f
+    ) {
+        // provide pageCount
+        sliderList.size
+    }
+
+    HorizontalPager(
+        state = pagerState,
+        modifier = Modifier.height(300.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        pageSpacing = 8.dp,
+        pageSize = PageSize.Fill
+    ) { page ->
+
+        Card(
+            colors = CardDefaults.cardColors(Color.Transparent),
+            shape = RoundedCornerShape(10.dp),
+            elevation = CardDefaults.cardElevation(0.dp),
+            border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary),
+            modifier = Modifier
+                .graphicsLayer {
+
+                    val pageOffset =
+                        (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction.absoluteValue
+                    lerp(
+                        start = 0.85f,
+                        stop = 1f,
+                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                    ).also { scale ->
+                        scaleX = scale
+                        scaleY = scale
+                    }
+//                    alpha = lerp(
+//                        start = 0.70f,
+//                        stop = 1f,
+//                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+//                    )
+                }
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(sliderList[page])
+                    .crossfade(true)
+                    .scale(Scale.FILL)
+                    .build(),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+                modifier = Modifier
+                    .offset {
+                        // Calculate the offset for the current page from the
+                        // scroll position
+                        val pageOffset =
+                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+                        // Then use it as a multiplier to apply an offset
+                        IntOffset(
+                            x = (70.dp * pageOffset).roundToPx(),
+                            y = 0,
+                        )
+                    }
+            )
+        }
+
     }
 }

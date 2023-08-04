@@ -38,7 +38,7 @@ fun NotesAppNavHost(
                 navigateToCreateNote = {
                     navController.navigate(CreateScreenDestination.route)
                 },
-                navigateToNoteDetail = {
+                navigateToDetailScreen = {
                     navController.navigate("${DetailScreenDestination.route}/${it}")
                 },
                 navigateToSearchScreen = {
@@ -90,6 +90,9 @@ fun NotesAppNavHost(
             SearchScreen(
                 navigateUp = {
                     navController.navigateUp()
+                },
+                navigateToDetailScreen = {
+                    navController.navigate("${DetailScreenDestination.route}/${it}")
                 },
             )
         }

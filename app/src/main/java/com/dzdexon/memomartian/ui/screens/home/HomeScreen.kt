@@ -58,7 +58,7 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     navigateToCreateNote: () -> Unit,
-    navigateToNoteDetail: (Int) -> Unit,
+    navigateToDetailScreen: (Int) -> Unit,
     navigateToSearchScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModelHome: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
@@ -90,7 +90,7 @@ fun HomeScreen(
         HomeBody(
             notesList = homeUiState.notesList,
             tagsList = tagState.tagList,
-            onNoteClick = navigateToNoteDetail,
+            onNoteClick = navigateToDetailScreen,
             modifier = modifier.padding(innerPadding),
         )
 

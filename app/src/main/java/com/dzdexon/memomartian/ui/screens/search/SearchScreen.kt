@@ -45,6 +45,7 @@ object SearchScreenDestination : NavigationDestination {
 fun SearchScreen(
     viewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory),
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToDetailScreen: (Int) -> Unit,
     navigateUp: () -> Unit
 ) {
     val searchText by viewModel.searchText.collectAsState()
@@ -109,7 +110,7 @@ fun SearchScreen(
                             .padding(4.dp)
                             .fillMaxWidth()
                             .clickable {
-//                          onNoteClick(note.id)
+                                navigateToDetailScreen(note.id)
                             }) {
 
                             Column(Modifier.padding(16.dp)) {
