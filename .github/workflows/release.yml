@@ -10,7 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: '<distribution>'
+          java-version: '17'
+          
       - name: Get Tag
         id: var
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
@@ -94,3 +100,4 @@ jobs:
           asset_path: ${{steps.sign_aab.outputs.signedReleaseFile}}
           asset_name: MemoMartian-${{ steps.var.outputs.tag }}.aab
           asset_content_type: application/zip
+
