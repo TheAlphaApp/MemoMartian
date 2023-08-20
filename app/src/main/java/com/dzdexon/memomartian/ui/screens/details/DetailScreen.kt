@@ -25,9 +25,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.dzdexon.memomartian.AppViewModelProvider
-import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
+import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 
 object DetailScreenDestination : NavigationDestination {
     override val route: String = "detail_screen"
@@ -95,12 +95,11 @@ fun DetailScreen(
                 }.map {
                     it.tagName
                 }.forEach { tag ->
-                   FilterChip(
-                       label = {
-                               Text(text = tag)
-                       },
-                       
-                       selected = true, onClick = { }) 
+                    FilterChip(
+                        label = {
+                            Text(text = tag)
+                        },
+                        selected = true, onClick = { })
                 }
             }
         }

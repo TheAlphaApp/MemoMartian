@@ -1,6 +1,8 @@
 package com.dzdexon.memomartian.navigation
 
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -31,7 +33,32 @@ fun NotesAppNavHost(
     ) {
         composable(
             route = HomeDestination.route,
-            ) {
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            }
+        ) {
+
             HomeScreen(
                 navigateToCreateNote = {
                     navController.navigate(CreateScreenDestination.route)
@@ -40,7 +67,7 @@ fun NotesAppNavHost(
                     navController.navigate("${DetailScreenDestination.route}/${it}")
                 },
                 navigateToSearchScreen = {
-                        navController.navigate(SearchScreenDestination.route)
+                    navController.navigate(SearchScreenDestination.route)
                 },
             )
         }
@@ -48,7 +75,31 @@ fun NotesAppNavHost(
             route = EditScreenDestination.routeWithArgs,
             arguments = listOf(navArgument(EditScreenDestination.noteIdArgs) {
                 type = NavType.IntType
-            })
+            }),
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            }
         ) {
             EditScreen(
                 navigateBack = {
@@ -59,7 +110,34 @@ fun NotesAppNavHost(
                 }
             )
         }
-        composable(route = CreateScreenDestination.route) {
+        composable(
+            route = CreateScreenDestination.route,
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            }
+
+        ) {
             CreateScreen(
                 navigateBack = {
                     navController.popBackStack()
@@ -73,7 +151,31 @@ fun NotesAppNavHost(
             route = DetailScreenDestination.routeWithArgs,
             arguments = listOf(navArgument(DetailScreenDestination.noteIdArgs) {
                 type = NavType.IntType
-            })
+            }),
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            }
         ) {
             DetailScreen(
                 navigateToEditScreen = {
@@ -84,7 +186,33 @@ fun NotesAppNavHost(
                 }
             )
         }
-        composable(route = SearchScreenDestination.route) {
+        composable(
+            route = SearchScreenDestination.route,
+            enterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                    animationSpec = tween(200)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                    animationSpec = tween(200)
+                )
+            }
+        ) {
             SearchScreen(
                 navigateUp = {
                     navController.navigateUp()
