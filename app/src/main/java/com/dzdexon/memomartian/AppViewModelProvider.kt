@@ -16,6 +16,7 @@ import com.dzdexon.memomartian.ui.screens.search.SearchViewModel
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
  */
+
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         //Initializer for HomeViewModel
@@ -62,4 +63,3 @@ object AppViewModelProvider {
 
 fun CreationExtras.notesApplication() : NotesApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as NotesApplication)
-

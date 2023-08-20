@@ -31,8 +31,6 @@ fun NotesAppNavHost(
     ) {
         composable(
             route = HomeDestination.route,
-
-
             ) {
             HomeScreen(
                 navigateToCreateNote = {
