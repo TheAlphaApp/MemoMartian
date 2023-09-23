@@ -38,7 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.ui.shared.component.CustomDialog
 import kotlinx.coroutines.launch
 

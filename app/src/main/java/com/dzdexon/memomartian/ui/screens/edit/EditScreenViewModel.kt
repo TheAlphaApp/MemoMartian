@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.NoteUiState
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.model.toNote
 import com.dzdexon.memomartian.model.toNoteUiState
 import com.dzdexon.memomartian.repository.NotesRepository

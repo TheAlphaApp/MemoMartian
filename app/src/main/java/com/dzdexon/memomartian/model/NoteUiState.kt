@@ -1,5 +1,6 @@
 package com.dzdexon.memomartian.model
 
+import com.dzdexon.memomartian.data.entities.Note
 import java.time.OffsetDateTime
 
 data class NoteUiState(

@@ -13,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.dzdexon.memomartian.model.Note
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Note
+import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.utils.HelperFunctions
 
 @OptIn(ExperimentalMaterial3Api::class)

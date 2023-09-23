@@ -1,7 +1,7 @@
 package com.dzdexon.memomartian.repository
 
 import com.dzdexon.memomartian.data.TagDao
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Tag
 import kotlinx.coroutines.flow.Flow
 
 class OfflineTagRepository(private val tagDao: TagDao): TagRepository {

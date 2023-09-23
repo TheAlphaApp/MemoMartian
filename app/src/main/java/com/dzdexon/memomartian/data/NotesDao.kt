@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.dzdexon.memomartian.model.Note
+import com.dzdexon.memomartian.data.entities.Note
 import kotlinx.coroutines.flow.Flow
 
 @Dao

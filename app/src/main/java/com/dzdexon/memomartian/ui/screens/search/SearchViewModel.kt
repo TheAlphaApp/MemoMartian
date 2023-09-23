@@ -2,7 +2,7 @@ package com.dzdexon.memomartian.ui.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzdexon.memomartian.model.Note
+import com.dzdexon.memomartian.data.entities.Note
 import com.dzdexon.memomartian.repository.NotesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

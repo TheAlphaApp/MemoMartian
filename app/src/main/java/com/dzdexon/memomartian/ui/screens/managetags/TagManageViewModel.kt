@@ -2,7 +2,7 @@ package com.dzdexon.memomartian.ui.screens.managetags
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.repository.TagRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dzdexon.memomartian.model.NoteUiState
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Tag
 
 @Composable
 fun EditNoteBody(

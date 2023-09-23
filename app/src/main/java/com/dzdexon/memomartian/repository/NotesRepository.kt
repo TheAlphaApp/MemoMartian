@@ -1,6 +1,6 @@
 package com.dzdexon.memomartian.repository
 
-import com.dzdexon.memomartian.model.Note
+import com.dzdexon.memomartian.data.entities.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NotesRepository {

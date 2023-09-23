@@ -5,8 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.dzdexon.memomartian.model.Note
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Note
+import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.utils.MyTypeConverters
 
 

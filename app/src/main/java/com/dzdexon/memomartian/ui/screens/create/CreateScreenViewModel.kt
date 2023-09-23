@@ -5,10 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.dzdexon.memomartian.model.NoteUiState
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.model.toNote
 import com.dzdexon.memomartian.repository.NotesRepository
-import java.time.Clock
 import java.time.OffsetDateTime
 
 class CreateScreenViewModel(private val notesRepository: NotesRepository) : ViewModel() {

@@ -57,7 +57,7 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import com.dzdexon.memomartian.NotesApplication
 import com.dzdexon.memomartian.model.NoteUiState
-import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageBottomSheet
 import kotlin.math.absoluteValue
 

@@ -1,10 +1,9 @@
 package com.dzdexon.memomartian.ui.screens.home
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.repository.NotesRepository
-import com.dzdexon.memomartian.model.Note
+import com.dzdexon.memomartian.data.entities.Note
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
