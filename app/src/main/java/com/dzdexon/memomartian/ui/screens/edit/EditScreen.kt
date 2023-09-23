@@ -60,7 +60,7 @@ fun EditScreen(
                     navigateBack()
                 }
             },
-            tagList = tagState.value.tagList,
+            tagEntityList = tagState.value.tagEntityList,
             addTagToNote = {tag ->
                 coroutineScope.launch {
                     viewModelEdit.updateTagInNote(tag)

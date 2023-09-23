@@ -2,7 +2,7 @@ package com.dzdexon.memomartian.ui.screens.managetags
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzdexon.memomartian.data.entities.Tag
+import com.dzdexon.memomartian.data.entities.TagEntity
 import com.dzdexon.memomartian.repository.TagRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,15 +21,15 @@ class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel()
         )
         private set
 
-    suspend fun updateTag(tag: Tag, tagString: String) {
+    suspend fun updateTag(tagEntity: TagEntity, tagString: String) {
         if (validateTagString(tagString)) {
-            tagRepository.updateTag(tag.copy(tagName = tagString))
+            tagRepository.updateTag(tagEntity.copy(tagName = tagString))
         }
 
     }
 
     private fun validateTagString(tagString: String): Boolean {
-        val isTagExist = tagState.value.tagList.map {
+        val isTagExist = tagState.value.tagEntityList.map {
             it.tagName.trim()
         }.contains(tagString) || tagString.trim() == "All"
         return tagString.isNotBlank() && tagString.isNotEmpty() && !isTagExist
@@ -37,7 +37,7 @@ class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel()
 
     suspend fun createNewTag(tagString: String) {
         if (validateTagString(tagString)) {
-            tagRepository.createTag(Tag(tagName = tagString.trim()))
+            tagRepository.createTag(TagEntity(tagName = tagString.trim()))
         }
     }
 
@@ -46,4 +46,4 @@ class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel()
     }
 }
 
-data class TagState(val tagList: List<Tag> = listOf())
+data class TagState(val tagEntityList: List<TagEntity> = listOf())

@@ -14,14 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dzdexon.memomartian.data.entities.NoteEntity
-import com.dzdexon.memomartian.data.entities.Tag
+import com.dzdexon.memomartian.data.entities.TagEntity
 import com.dzdexon.memomartian.utils.HelperFunctions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteCard(
     noteEntity: NoteEntity,
-    tagsList: List<Tag>,
+    tagsList: List<TagEntity>,
     onClick: (Int) -> Unit
 ) {
     Card(modifier = Modifier

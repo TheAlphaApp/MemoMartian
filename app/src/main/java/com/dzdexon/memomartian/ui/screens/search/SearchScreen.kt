@@ -128,7 +128,7 @@ fun SearchScreen(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
 
-                                tagState.tagList.filter {
+                                tagState.tagEntityList.filter {
                                     note.tags.contains(
                                         it.id
                                     )

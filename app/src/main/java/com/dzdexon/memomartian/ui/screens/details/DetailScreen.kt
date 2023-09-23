@@ -90,7 +90,7 @@ fun DetailScreen(
                 Text(text = note.value.title, style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = note.value.content, style = MaterialTheme.typography.bodyLarge)
-                tagList.value.tagList.filter { tag ->
+                tagList.value.tagEntityList.filter { tag ->
                     note.value.tags.contains(tag.id)
                 }.map {
                     it.tagName
