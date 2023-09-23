@@ -6,10 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dzdexon.memomartian.model.NoteUiState
+import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
-import com.dzdexon.memomartian.model.toNote
-import com.dzdexon.memomartian.model.toNoteUiState
 import com.dzdexon.memomartian.repository.NotesRepository
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -20,39 +18,45 @@ class EditScreenViewModel(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-
+    private val emptyNote = Note(
+        id = 0,
+        title = "",
+        content = "",
+        tags = emptyList(),
+        lastUpdate = null,
+        imageUri = null
+    )
+    var note by mutableStateOf(emptyNote)
+        private set
     private val noteId: Int = checkNotNull(savedStateHandle[EditScreenDestination.noteIdArgs])
 
     init {
         viewModelScope.launch {
-            noteUiState = notesRepository.getNoteStream(noteId)
+            note = notesRepository.getNoteStream(noteId)
                 .filterNotNull()
                 .first()
-                .toNoteUiState(true)
         }
     }
 
-    var noteUiState by mutableStateOf(NoteUiState())
-        private set
 
-    fun updateUiState(note: NoteUiState) {
-        noteUiState = note.copy(isValid = validateInput(note))
-        validateInput(noteUiState)
+
+    fun updateUiState(note: Note) {
+           this.note = note
     }
 
     fun updateTagInNote(tag: Tag, remove: Boolean = false) {
         if (remove) {
-            if (noteUiState.tags.contains(tag.id)) {
-                val tags = noteUiState.tags.toMutableList()
+            if (note.tags.contains(tag.id)) {
+                val tags = note.tags.toMutableList()
                 tags.remove(tag.id)
-                noteUiState = noteUiState.copy(
+                note = note.copy(
                     tags = tags
                 )
             }
         } else {
-            val tags = noteUiState.tags.toMutableList()
+            val tags = note.tags.toMutableList()
             tags.add(tag.id)
-            noteUiState = noteUiState.copy(
+            note = note.copy(
                 tags = tags
             )
         }
@@ -60,13 +64,13 @@ class EditScreenViewModel(
     }
 
     suspend fun updateNote() {
-        if (validateInput()) {
-            noteUiState = noteUiState.copy(lastUpdate = OffsetDateTime.now())
-            notesRepository.updateNote(noteUiState.toNote())
+        if (validateInput(this.note)) {
+            this.note = this.note.copy(lastUpdate = OffsetDateTime.now())
+            notesRepository.updateNote(this.note)
         }
     }
 
-    private fun validateInput(uiState: NoteUiState = noteUiState): Boolean {
+    fun validateInput(uiState: Note = this.note): Boolean {
         return with(uiState) {
             title.isNotBlank() && content.isNotBlank()
         }

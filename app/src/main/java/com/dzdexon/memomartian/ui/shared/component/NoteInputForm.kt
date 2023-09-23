@@ -56,7 +56,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
 import com.dzdexon.memomartian.NotesApplication
-import com.dzdexon.memomartian.model.NoteUiState
+import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageBottomSheet
 import kotlin.math.absoluteValue
@@ -65,9 +65,10 @@ import kotlin.math.absoluteValue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteInputForm(
-    noteUiState: NoteUiState,
+    note: Note,
+    isNoteValid: Boolean,
     modifier: Modifier = Modifier,
-    onValueChange: (NoteUiState) -> Unit = {},
+    onValueChange: (Note) -> Unit = {},
     onSaveClick: () -> Unit,
     tagList: List<Tag>,
     addTagToNote: (Tag) -> Unit,
@@ -97,16 +98,16 @@ fun NoteInputForm(
                     Log.d("Image URI", imageString.toString())
 
                 }
-                val oldString = noteUiState.imageUri
+                val oldString = note.imageUri
                 val newString = if (oldString != null) {
                     "$oldString,$imageString"
                 } else {
                     imageString
                 }
                 onValueChange(
-                    noteUiState.copy(imageUri = newString)
+                    note.copy(imageUri = newString)
                 )
-                Log.d("Note UI Image ", noteUiState.imageUri.toString())
+                Log.d("Note UI Image ", note.imageUri.toString())
 
             }
         }
@@ -117,7 +118,7 @@ fun NoteInputForm(
         TagManageBottomSheet(
             addTagToNote = addTagToNote,
             removeTagFromNote = removeTagFromNote,
-            selectedTags = noteUiState.tags,
+            selectedTags = note.tags,
         ) {
             showSheet = false
         }
@@ -127,8 +128,8 @@ fun NoteInputForm(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        if (!noteUiState.imageUri.isNullOrEmpty()) {
-            val imageList = noteUiState.imageUri.split(",").toTypedArray()
+        if (!note.imageUri.isNullOrEmpty()) {
+            val imageList = note.imageUri.split(",").toTypedArray()
             BuildImageSlider(imageList.toList())
 //            imageList.forEach { imageStr ->
 //                Image(
@@ -149,8 +150,8 @@ fun NoteInputForm(
         }
 
         TextField(
-            value = noteUiState.title,
-            onValueChange = { onValueChange(noteUiState.copy(title = it)) },
+            value = note.title,
+            onValueChange = { onValueChange(note.copy(title = it)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             placeholder = { Text("Title", style = MaterialTheme.typography.titleLarge) },
             modifier = Modifier.fillMaxWidth(),
@@ -165,8 +166,8 @@ fun NoteInputForm(
             textStyle = MaterialTheme.typography.titleLarge
         )
         TextField(
-            value = noteUiState.content,
-            onValueChange = { onValueChange(noteUiState.copy(content = it)) },
+            value = note.content,
+            onValueChange = { onValueChange(note.copy(content = it)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             placeholder = { Text("Content", style = MaterialTheme.typography.bodyLarge) },
             modifier = Modifier.fillMaxWidth(),
@@ -183,7 +184,7 @@ fun NoteInputForm(
         )
         TagView(
             tagList.filter { tag ->
-                noteUiState.tags.contains(tag.id)
+                note.tags.contains(tag.id)
             }.map {
                 it.tagName
             }
@@ -211,7 +212,7 @@ fun NoteInputForm(
             }
         }
 
-        if (noteUiState.isValid) Button(
+        if (isNoteValid) Button(
             onClick = onSaveClick,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -243,9 +244,9 @@ fun NoteInputForm(
                             label = {
                                 Text(text = tag.tagName)
                             },
-                            selected = noteUiState.tags.contains(tag.id),
+                            selected = note.tags.contains(tag.id),
                             onClick = {
-                                if (noteUiState.tags.contains(tag.id)) {
+                                if (note.tags.contains(tag.id)) {
                                     removeTagFromNote(tag)
                                 } else {
                                     addTagToNote(tag)

@@ -1,7 +1,6 @@
 package com.dzdexon.memomartian.ui.screens.create
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,7 +18,7 @@ object CreateScreenDestination : NavigationDestination {
     override val route: String = "createScreen"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun CreateScreen(
     modifier: Modifier = Modifier,
@@ -46,7 +45,7 @@ fun CreateScreen(
         },
     ) { innerPadding ->
         EditNoteBody(
-            noteUiState = viewModelCreate.noteUiState,
+            note = viewModelCreate.note,
             onNoteValueChange = viewModelCreate::updateUiState,
             onSaveClick = {
                 coroutineScope.launch {
@@ -65,6 +64,7 @@ fun CreateScreen(
                 }
             },
             tagList = tagState.value.tagList,
+            isNoteValid = viewModelCreate.validateInput(),
             modifier = modifier.padding(innerPadding)
         )
 

@@ -1,4 +1,5 @@
 package com.dzdexon.memomartian.model
+
 import com.dzdexon.memomartian.data.entities.NoteEntity
 import java.time.OffsetDateTime
 
@@ -10,6 +11,7 @@ data class Note(
     val lastUpdate: OffsetDateTime? = null,
     val imageUri: String? = null
 )
+
 fun Note.asEntity() = NoteEntity(
     id = id,
     title = title,
@@ -19,16 +21,5 @@ fun Note.asEntity() = NoteEntity(
     imageUri = imageUri
 )
 
-/**
- * Extension function to convert [NoteEntity] to [NoteUiState]*/
-fun Note.toNoteUiState(isValid: Boolean): NoteUiState = NoteUiState(
-    id = id,
-    title = title,
-    content = content,
-    tags = tags,
-    isValid = isValid,
-    lastUpdate = lastUpdate,
-    imageUri = imageUri
-)
 
 

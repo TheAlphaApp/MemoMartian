@@ -9,14 +9,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.dzdexon.memomartian.model.NoteUiState
+import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 
 @Composable
 fun EditNoteBody(
-    noteUiState: NoteUiState,
+    note: Note,
     tagList: List<Tag>,
-    onNoteValueChange: (NoteUiState) -> Unit,
+    isNoteValid: Boolean,
+    onNoteValueChange: (Note) -> Unit,
     onSaveClick: () -> Unit,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
@@ -33,12 +34,13 @@ fun EditNoteBody(
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             NoteInputForm(
-                noteUiState = noteUiState,
+                note = note,
                 onValueChange = onNoteValueChange,
                 tagList = tagList,
                 addTagToNote = addTagToNote,
                 removeTagFromNote = removeTagFromNote,
-                onSaveClick = onSaveClick
+                onSaveClick = onSaveClick,
+                isNoteValid = isNoteValid,
             )
 
         }

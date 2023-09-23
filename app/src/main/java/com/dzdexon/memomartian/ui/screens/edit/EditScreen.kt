@@ -2,7 +2,6 @@ package com.dzdexon.memomartian.ui.screens.edit
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,7 +23,6 @@ object EditScreenDestination : NavigationDestination {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreen(
     modifier: Modifier = Modifier,
@@ -52,7 +50,7 @@ fun EditScreen(
         },
     ) { innerPadding ->
         EditNoteBody(
-            noteUiState = viewModelEdit.noteUiState,
+            note = viewModelEdit.note,
             onNoteValueChange = viewModelEdit::updateUiState,
             onSaveClick = {
                 coroutineScope.launch {
@@ -71,7 +69,8 @@ fun EditScreen(
                     viewModelEdit.updateTagInNote(tag, remove = true)
                 }
             },
-            modifier = modifier.padding(innerPadding)
+            modifier = modifier.padding(innerPadding),
+            isNoteValid = viewModelEdit.validateInput()
         )
 
     }
