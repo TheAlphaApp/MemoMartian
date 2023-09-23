@@ -64,7 +64,7 @@ fun CreateScreen(
                     viewModelCreate.updateTagInNewNote(tag, remove = true)
                 }
             },
-            tagEntityList = tagState.value.tagEntityList,
+            tagList = tagState.value.tagList,
             modifier = modifier.padding(innerPadding)
         )
 

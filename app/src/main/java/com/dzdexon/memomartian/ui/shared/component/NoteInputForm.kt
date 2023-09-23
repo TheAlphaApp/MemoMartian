@@ -57,7 +57,7 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import com.dzdexon.memomartian.NotesApplication
 import com.dzdexon.memomartian.model.NoteUiState
-import com.dzdexon.memomartian.data.entities.TagEntity
+import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageBottomSheet
 import kotlin.math.absoluteValue
 
@@ -69,9 +69,9 @@ fun NoteInputForm(
     modifier: Modifier = Modifier,
     onValueChange: (NoteUiState) -> Unit = {},
     onSaveClick: () -> Unit,
-    tagEntityList: List<TagEntity>,
-    addTagToNote: (TagEntity) -> Unit,
-    removeTagFromNote: (TagEntity) -> Unit,
+    tagList: List<Tag>,
+    addTagToNote: (Tag) -> Unit,
+    removeTagFromNote: (Tag) -> Unit,
 ) {
     var showTagDialog by rememberSaveable {
         mutableStateOf(false)
@@ -182,7 +182,7 @@ fun NoteInputForm(
 
         )
         TagView(
-            tagEntityList.filter { tag ->
+            tagList.filter { tag ->
                 noteUiState.tags.contains(tag.id)
             }.map {
                 it.tagName
@@ -237,7 +237,7 @@ fun NoteInputForm(
                 LazyVerticalStaggeredGrid(
                     columns = StaggeredGridCells.Adaptive(100.dp)
                 ) {
-                    items(items = tagEntityList, key = { it.id }) { tag ->
+                    items(items = tagList, key = { it.id }) { tag ->
                         FilterChip(
                             modifier = Modifier.padding(horizontal = 8.dp),
                             label = {

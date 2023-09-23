@@ -38,7 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
-import com.dzdexon.memomartian.data.entities.TagEntity
+import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.ui.shared.component.CustomDialog
 import kotlinx.coroutines.launch
 
@@ -46,8 +46,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagManageBottomSheet(
-    addTagToNote: (TagEntity) -> Unit,
-    removeTagFromNote: (TagEntity) -> Unit,
+    addTagToNote: (Tag) -> Unit,
+    removeTagFromNote: (Tag) -> Unit,
     selectedTags: List<Int>,
     onDismiss: () -> Unit
 ) {
@@ -71,13 +71,13 @@ fun TagManageBottomSheet(
 )
 @Composable
 private fun TagSelectionScreen(
-    addTagToNote: (TagEntity) -> Unit,
-    removeTagFromNote: (TagEntity) -> Unit,
+    addTagToNote: (Tag) -> Unit,
+    removeTagFromNote: (Tag) -> Unit,
     selectedTags: List<Int>,
     viewModel: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val tagState = viewModel.tagState.collectAsState()
-    val tagList = tagState.value.tagEntityList
+    val tagList = tagState.value.tagList
     val coroutineScope = rememberCoroutineScope()
     var newTagString by remember {
         mutableStateOf("")
@@ -192,11 +192,11 @@ private fun TagSelectionScreen(
 @Composable
 fun TagUpdateDialog(
     onDismiss: () -> Unit,
-    tagEntity: TagEntity,
+    tag: Tag,
     viewModel: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     var newTagString by remember {
-        mutableStateOf(tagEntity.tagName)
+        mutableStateOf(tag.tagName)
     }
     val coroutineScope = rememberCoroutineScope()
 
@@ -230,7 +230,7 @@ fun TagUpdateDialog(
             ElevatedButton(
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.updateTag(tagEntity, newTagString)
+                        viewModel.updateTag(tag, newTagString)
                     }.invokeOnCompletion {
                         onDismiss()
                     }

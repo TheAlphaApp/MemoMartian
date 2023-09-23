@@ -45,8 +45,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
-import com.dzdexon.memomartian.data.entities.TagEntity
 import com.dzdexon.memomartian.model.Note
+import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
 import com.dzdexon.memomartian.ui.shared.component.NoteCard
@@ -89,7 +89,7 @@ fun HomeScreen(
         ) { innerPadding ->
         HomeBody(
             notesList = homeUiState.notesList,
-            tagsList = tagState.tagEntityList,
+            tagsList = tagState.tagList,
             onNoteClick = navigateToDetailScreen,
             modifier = modifier.padding(innerPadding),
         )
@@ -102,15 +102,15 @@ fun HomeScreen(
 @Composable
 fun HomeBody(
     notesList: List<Note>,
-    tagsList: List<TagEntity>,
+    tagsList: List<Tag>,
     onNoteClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val ALL_TAGEntity = TagEntity(id = 420373, tagName = "All")
+    val ALL_TAG = Tag(id = 420373, tagName = "All")
     var selectedTag by remember {
-        mutableStateOf(ALL_TAGEntity)
+        mutableStateOf(ALL_TAG)
     }
-    val newTagsList = listOf(ALL_TAGEntity) + tagsList
+    val newTagsList = listOf(ALL_TAG) + tagsList
     Column(
         modifier = modifier, verticalArrangement = Arrangement.Top
     ) {
@@ -134,7 +134,7 @@ fun HomeBody(
             columns = StaggeredGridCells.Fixed(2),
         ) {
             items(items = notesList.filter { note ->
-                if (selectedTag == ALL_TAGEntity) true
+                if (selectedTag == ALL_TAG) true
                 else note.tags.contains(selectedTag.id)
             }, key = { it.id }) { note ->
                 NoteCard(

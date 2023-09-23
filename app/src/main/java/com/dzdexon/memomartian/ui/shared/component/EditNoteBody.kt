@@ -10,16 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dzdexon.memomartian.model.NoteUiState
-import com.dzdexon.memomartian.data.entities.TagEntity
+import com.dzdexon.memomartian.model.Tag
 
 @Composable
 fun EditNoteBody(
     noteUiState: NoteUiState,
-    tagEntityList: List<TagEntity>,
+    tagList: List<Tag>,
     onNoteValueChange: (NoteUiState) -> Unit,
     onSaveClick: () -> Unit,
-    addTagToNote: (TagEntity) -> Unit,
-    removeTagFromNote: (TagEntity) -> Unit,
+    addTagToNote: (Tag) -> Unit,
+    removeTagFromNote: (Tag) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -35,7 +35,7 @@ fun EditNoteBody(
             NoteInputForm(
                 noteUiState = noteUiState,
                 onValueChange = onNoteValueChange,
-                tagEntityList = tagEntityList,
+                tagList = tagList,
                 addTagToNote = addTagToNote,
                 removeTagFromNote = removeTagFromNote,
                 onSaveClick = onSaveClick
