@@ -3,13 +3,13 @@ package com.dzdexon.memomartian.ui.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.repository.NotesRepository
-import com.dzdexon.memomartian.data.entities.Note
+import com.dzdexon.memomartian.data.entities.NoteEntity
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class HomeViewModel(private val notesRepository: NotesRepository) : ViewModel() {
+class HomeViewModel(notesRepository: NotesRepository) : ViewModel() {
     /**
      * Holds home ui state. The list of items are retrieved from [NotesRepository] and mapped to
      * [HomeUiState]
@@ -29,4 +29,4 @@ class HomeViewModel(private val notesRepository: NotesRepository) : ViewModel() 
     }
 }
 
-data class HomeUiState(val notesList: List<Note> = listOf())
+data class HomeUiState(val notesList: List<NoteEntity> = listOf())

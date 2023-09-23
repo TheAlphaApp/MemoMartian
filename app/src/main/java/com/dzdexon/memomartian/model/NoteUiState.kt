@@ -1,6 +1,6 @@
 package com.dzdexon.memomartian.model
 
-import com.dzdexon.memomartian.data.entities.Note
+import com.dzdexon.memomartian.data.entities.NoteEntity
 import java.time.OffsetDateTime
 
 data class NoteUiState(
@@ -14,8 +14,8 @@ data class NoteUiState(
 )
 
 /**
- * Extension function to convert [Note] to [NoteUiState]*/
-fun Note.toNoteUiState(isValid: Boolean): NoteUiState = NoteUiState(
+ * Extension function to convert [NoteEntity] to [NoteUiState]*/
+fun NoteEntity.toNoteUiState(isValid: Boolean): NoteUiState = NoteUiState(
     id = id,
     title = title,
     content = content,
@@ -26,8 +26,8 @@ fun Note.toNoteUiState(isValid: Boolean): NoteUiState = NoteUiState(
 )
 
 /**
- * Extension function to convert [NoteUiState] to [Note]*/
-fun NoteUiState.toNote(): Note = Note(
+ * Extension function to convert [NoteUiState] to [NoteEntity]*/
+fun NoteUiState.toNote(): NoteEntity = NoteEntity(
     id = id,
     title = title,
     content = content,

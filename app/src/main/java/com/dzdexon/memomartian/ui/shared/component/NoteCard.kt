@@ -13,14 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.dzdexon.memomartian.data.entities.Note
+import com.dzdexon.memomartian.data.entities.NoteEntity
 import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.utils.HelperFunctions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteCard(
-    note: Note,
+    noteEntity: NoteEntity,
     tagsList: List<Tag>,
     onClick: (Int) -> Unit
 ) {
@@ -28,31 +28,31 @@ fun NoteCard(
         .padding(4.dp)
         .fillMaxWidth()
         .clickable {
-            onClick(note.id)
+            onClick(noteEntity.id)
         }) {
 
         Column(Modifier.padding(16.dp)) {
             Text(
-                text = note.title,
+                text = noteEntity.title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge
             )
 
             Text(
-                text = HelperFunctions.formatOffsetDateTime(note.lastUpdate) ?: "",
+                text = HelperFunctions.formatOffsetDateTime(noteEntity.lastUpdate) ?: "",
 
                 style = MaterialTheme.typography.bodySmall
             )
             Text(
-                text = note.content,
+                text = noteEntity.content,
                 maxLines = 10,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyMedium
             )
 
             tagsList.filter {
-                note.tags.contains(
+                noteEntity.tags.contains(
                     it.id
                 )
             }.map { filteredTag ->

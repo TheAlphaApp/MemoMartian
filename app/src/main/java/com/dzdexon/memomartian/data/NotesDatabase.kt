@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.dzdexon.memomartian.data.entities.Note
+import com.dzdexon.memomartian.data.entities.NoteEntity
 import com.dzdexon.memomartian.data.entities.Tag
 import com.dzdexon.memomartian.utils.MyTypeConverters
 
@@ -14,7 +14,7 @@ import com.dzdexon.memomartian.utils.MyTypeConverters
  * Database class with a singleton INSTANCE object.
  */
 @TypeConverters(MyTypeConverters::class)
-@Database(entities = [Note::class, Tag::class], version = 2, exportSchema = false)
+@Database(entities = [NoteEntity::class, Tag::class], version = 2, exportSchema = false)
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun notesDao(): NotesDao
     abstract fun tagDao(): TagDao

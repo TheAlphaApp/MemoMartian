@@ -5,24 +5,24 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.dzdexon.memomartian.data.entities.Note
+import com.dzdexon.memomartian.data.entities.NoteEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotesDao {
     @Query("SELECT * FROM notes ORDER BY datetime(lastUpdate) DESC")
-    fun getAllNotes(): Flow<List<Note>>
+    fun getAllNotes(): Flow<List<NoteEntity>>
 
     @Query("SELECT * FROM notes WHERE id = :id")
-    fun getNote(id: Int) : Flow<Note>
+    fun getNote(id: Int) : Flow<NoteEntity>
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%' ORDER BY datetime(lastUpdate) DESC")
-    fun searchNotes(query: String): Flow<List<Note>>
+    fun searchNotes(query: String): Flow<List<NoteEntity>>
     // Specify the conflict strategy as IGNORE, when the user tries to add an
     // existing Item into the database Room ignores the conflict.
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun createNote(note: Note)
+    suspend fun createNote(noteEntity: NoteEntity)
 
     @Update
-    suspend fun updateNote(note: Note)
+    suspend fun updateNote(noteEntity: NoteEntity)
 
 }
