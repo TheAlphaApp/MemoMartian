@@ -13,21 +13,11 @@ data class NoteUiState(
     val imageUri: String? = null
 )
 
-/**
- * Extension function to convert [NoteEntity] to [NoteUiState]*/
-fun NoteEntity.toNoteUiState(isValid: Boolean): NoteUiState = NoteUiState(
-    id = id,
-    title = title,
-    content = content,
-    tags = tags,
-    isValid = isValid,
-    lastUpdate = lastUpdate,
-    imageUri = imageUri
-)
+
 
 /**
  * Extension function to convert [NoteUiState] to [NoteEntity]*/
-fun NoteUiState.toNote(): NoteEntity = NoteEntity(
+fun NoteUiState.toNote(): Note = Note(
     id = id,
     title = title,
     content = content,

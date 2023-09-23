@@ -45,8 +45,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
-import com.dzdexon.memomartian.data.entities.NoteEntity
 import com.dzdexon.memomartian.data.entities.TagEntity
+import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
 import com.dzdexon.memomartian.ui.shared.component.NoteCard
@@ -101,7 +101,7 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeBody(
-    notesList: List<NoteEntity>,
+    notesList: List<Note>,
     tagsList: List<TagEntity>,
     onNoteClick: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -138,7 +138,7 @@ fun HomeBody(
                 else note.tags.contains(selectedTag.id)
             }, key = { it.id }) { note ->
                 NoteCard(
-                    noteEntity = note, tagsList = tagsList, onClick = onNoteClick
+                    note = note, tagsList = tagsList, onClick = onNoteClick
                 )
             }
         }

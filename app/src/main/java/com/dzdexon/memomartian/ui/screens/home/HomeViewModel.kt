@@ -2,8 +2,8 @@ package com.dzdexon.memomartian.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.repository.NotesRepository
-import com.dzdexon.memomartian.data.entities.NoteEntity
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -29,4 +29,4 @@ class HomeViewModel(notesRepository: NotesRepository) : ViewModel() {
     }
 }
 
-data class HomeUiState(val notesList: List<NoteEntity> = listOf())
+data class HomeUiState(val notesList: List<Note> = listOf())
