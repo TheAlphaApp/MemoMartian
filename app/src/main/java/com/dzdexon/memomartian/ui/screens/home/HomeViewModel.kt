@@ -6,27 +6,19 @@ import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.repository.NotesRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(notesRepository: NotesRepository) : ViewModel() {
-    /**
-     * Holds home ui state. The list of items are retrieved from [NotesRepository] and mapped to
-     * [HomeUiState]
-     */
-    val homeUiState: StateFlow<HomeUiState> = notesRepository
-        .getAllNotesStream().map {
-            HomeUiState(it)
-        }
+
+    val stateFlowOfListOfNotes: StateFlow<List<Note>> = notesRepository
+        .getAllNotesStream()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = HomeUiState()
+            initialValue = listOf()
         )
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
 }
-
-data class HomeUiState(val notesList: List<Note> = listOf())

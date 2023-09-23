@@ -64,7 +64,7 @@ fun HomeScreen(
     viewModelHome: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val homeUiState by viewModelHome.homeUiState.collectAsState()
+    val listOfNotes by viewModelHome.stateFlowOfListOfNotes.collectAsState()
     val tagState by viewModelTag.tagState.collectAsState()
 
     Scaffold(
@@ -88,7 +88,7 @@ fun HomeScreen(
 
         ) { innerPadding ->
         HomeBody(
-            notesList = homeUiState.notesList,
+            notesList = listOfNotes,
             tagsList = tagState.tagList,
             onNoteClick = navigateToDetailScreen,
             modifier = modifier.padding(innerPadding),
