@@ -58,7 +58,6 @@ import coil.size.Scale
 import com.dzdexon.memomartian.NotesApplication
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
-import com.dzdexon.memomartian.ui.screens.managetags.TagManageBottomSheet
 import kotlin.math.absoluteValue
 
 
@@ -73,6 +72,7 @@ fun NoteInputForm(
     tagList: List<Tag>,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
+    createNewTag: (String) -> Boolean,
 ) {
     var showTagDialog by rememberSaveable {
         mutableStateOf(false)
@@ -119,6 +119,8 @@ fun NoteInputForm(
             addTagToNote = addTagToNote,
             removeTagFromNote = removeTagFromNote,
             selectedTags = note.tags,
+            tagList = tagList,
+            createNewTag = createNewTag,
         ) {
             showSheet = false
         }

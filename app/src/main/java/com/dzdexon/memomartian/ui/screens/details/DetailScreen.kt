@@ -47,7 +47,7 @@ fun DetailScreen(
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val note = viewModelDetail.uiState.collectAsState()
-    val tagList = viewModelTag.tagState.collectAsState()
+    val tagList = viewModelTag.tagList.collectAsState()
     Scaffold(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         topBar = {
@@ -90,7 +90,7 @@ fun DetailScreen(
                 Text(text = note.value.title, style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = note.value.content, style = MaterialTheme.typography.bodyLarge)
-                tagList.value.tagList.filter { tag ->
+                tagList.value.filter { tag ->
                     note.value.tags.contains(tag.id)
                 }.map {
                     it.tagName

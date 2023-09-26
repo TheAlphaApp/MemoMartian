@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.navigation.NavigationDestination
-import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
 import com.dzdexon.memomartian.ui.shared.component.EditNoteBody
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import kotlinx.coroutines.launch
@@ -29,11 +28,10 @@ fun EditScreen(
     navigateBack: () -> Unit,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
-    viewModelEdit: EditScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModelEdit: EditScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val tagState = viewModelTag.tagState.collectAsState()
+    val tagList = viewModelEdit.tagList.collectAsState()
     Scaffold(
         topBar = {
             NoteTopAppBar(
@@ -58,7 +56,7 @@ fun EditScreen(
                     navigateBack()
                 }
             },
-            tagList = tagState.value.tagList,
+            tagList = tagList.value,
             addTagToNote = { tag ->
                 coroutineScope.launch {
                     viewModelEdit.updateTagInNote(tag)
@@ -70,7 +68,8 @@ fun EditScreen(
                 }
             },
             modifier = modifier.padding(innerPadding),
-            isNoteValid = viewModelEdit.validateInput()
+            isNoteValid = viewModelEdit.validateInput(),
+            createNewTag = viewModelEdit::createNewTag
         )
 
     }

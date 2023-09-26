@@ -12,6 +12,11 @@ class OfflineTagRepository(private val tagDao: TagDao) : TagRepository {
     override fun getAllTagsStream(): Flow<List<Tag>> =
         tagDao.getAllTags().map { it.map(TagEntity::asExternalModel) }
 
-    override suspend fun createTag(tag: Tag) = tagDao.createTag(tag.asEntity())
+    override suspend fun createTag(tag: Tag): Long {
+        tagDao.createTag(tag.asEntity()).also {
+            return it
+        }
+    }
+
     override suspend fun updateTag(tag: Tag) = tagDao.updateTag(tag.asEntity())
 }

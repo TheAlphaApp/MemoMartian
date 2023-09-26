@@ -22,19 +22,24 @@ object AppViewModelProvider {
         //Initializer for HomeViewModel
         initializer {
             HomeViewModel(
-                notesApplication().container.notesRepository
+                notesApplication().container.notesRepository,
+                notesApplication().container.tagRepository
             )
         }
         initializer {
             EditScreenViewModel(
                 this.createSavedStateHandle(),
-                notesApplication().container.notesRepository
+                notesApplication().container.notesRepository,
+                notesApplication().container.tagRepository
+
             )
         }
 
         initializer {
             CreateScreenViewModel(
-                notesApplication().container.notesRepository
+                notesApplication().container.notesRepository,
+                notesApplication().container.tagRepository
+
             )
         }
         initializer {

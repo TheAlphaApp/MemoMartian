@@ -29,7 +29,7 @@ fun CreateScreen(
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val tagState = viewModelTag.tagState.collectAsState()
+    val tagList = viewModelTag.tagList.collectAsState()
     Scaffold(
         topBar = {
             NoteTopAppBar(
@@ -63,9 +63,10 @@ fun CreateScreen(
                     viewModelCreate.updateTagInNewNote(tag, remove = true)
                 }
             },
-            tagList = tagState.value.tagList,
+            tagList = tagList.value,
             isNoteValid = viewModelCreate.validateInput(),
-            modifier = modifier.padding(innerPadding)
+            modifier = modifier.padding(innerPadding),
+            createNewTag = viewModelCreate::createNewTag
         )
 
     }

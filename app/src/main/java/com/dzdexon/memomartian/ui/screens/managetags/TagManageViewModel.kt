@@ -6,18 +6,17 @@ import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.repository.TagRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel() {
-    var tagState: StateFlow<TagState> = tagRepository
-        .getAllTagsStream().map {
-            TagState(it)
-        }
+
+
+    var tagList: StateFlow<List<Tag>> = tagRepository
+        .getAllTagsStream()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = TagState()
+            initialValue = listOf()
         )
         private set
 
@@ -29,7 +28,7 @@ class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel()
     }
 
     private fun validateTagString(tagString: String): Boolean {
-        val isTagExist = tagState.value.tagList.map {
+        val isTagExist = tagList.value.map {
             it.tagName.trim()
         }.contains(tagString) || tagString.trim() == "All"
         return tagString.isNotBlank() && tagString.isNotEmpty() && !isTagExist
@@ -46,4 +45,3 @@ class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel()
     }
 }
 
-data class TagState(val tagList: List<Tag> = listOf())

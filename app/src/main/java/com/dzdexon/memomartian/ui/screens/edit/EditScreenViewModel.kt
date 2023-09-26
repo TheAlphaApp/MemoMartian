@@ -9,14 +9,20 @@ import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.repository.NotesRepository
+import com.dzdexon.memomartian.repository.TagRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import okhttp3.internal.toImmutableList
 import java.time.OffsetDateTime
 
 class EditScreenViewModel(
     savedStateHandle: SavedStateHandle,
-    private val notesRepository: NotesRepository
+    private val notesRepository: NotesRepository,
+    private val tagRepository: TagRepository,
 ) : ViewModel() {
     private val emptyNote = Note(
         id = 0,
@@ -30,6 +36,16 @@ class EditScreenViewModel(
         private set
     private val noteId: Int = checkNotNull(savedStateHandle[EditScreenDestination.noteIdArgs])
 
+
+    var tagList: StateFlow<List<Tag>> = tagRepository
+        .getAllTagsStream()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = listOf()
+        )
+        private set
+
     init {
         viewModelScope.launch {
             note = notesRepository.getNoteStream(noteId)
@@ -39,12 +55,11 @@ class EditScreenViewModel(
     }
 
 
-
     fun updateUiState(note: Note) {
-           this.note = note
+        this.note = note
     }
 
-    fun updateTagInNote(tag: Tag, remove: Boolean = false) {
+    suspend fun updateTagInNote(tag: Tag, remove: Boolean = false) {
         if (remove) {
             if (note.tags.contains(tag.id)) {
                 val tags = note.tags.toMutableList()
@@ -60,7 +75,7 @@ class EditScreenViewModel(
                 tags = tags
             )
         }
-
+        notesRepository.updateNote(this.note)
     }
 
     suspend fun updateNote() {
@@ -74,5 +89,35 @@ class EditScreenViewModel(
         return with(uiState) {
             title.isNotBlank() && content.isNotBlank()
         }
+    }
+
+
+    private fun validateTagString(tagString: String): Boolean {
+        val isTagExist = tagList.value.map {
+            it.tagName.trim()
+        }.contains(tagString) || tagString.trim() == "All"
+        return tagString.isNotBlank() && tagString.isNotEmpty() && !isTagExist
+    }
+
+    fun createNewTag(tagString: String): Boolean {
+        if (validateTagString(tagString)) {
+            val isCompleted = viewModelScope.launch {
+                tagRepository.createTag(Tag(tagName = tagString.trim())).also { id ->
+                    val tags = note.tags.toMutableList()
+                    tags.add(id.toInt())
+                    note = note.copy(
+                        tags = tags.toImmutableList()
+                    )
+                    notesRepository.updateNote(note)
+                }
+            }.isCompleted
+
+            return isCompleted
+        }
+        return false
+    }
+
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
     }
 }

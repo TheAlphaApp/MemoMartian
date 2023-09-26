@@ -21,6 +21,7 @@ fun EditNoteBody(
     onSaveClick: () -> Unit,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
+    createNewTag: (String) -> Boolean,
     modifier: Modifier = Modifier,
 ) {
 
@@ -41,6 +42,7 @@ fun EditNoteBody(
                 removeTagFromNote = removeTagFromNote,
                 onSaveClick = onSaveClick,
                 isNoteValid = isNoteValid,
+                createNewTag = createNewTag,
             )
 
         }

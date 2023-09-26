@@ -51,7 +51,7 @@ fun SearchScreen(
     val searchText by viewModel.searchText.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
     val notes by viewModel.notes.collectAsState()
-    val tagState by viewModelTag.tagState.collectAsState()
+    val tagList by viewModelTag.tagList.collectAsState()
     val focusRequester = remember { FocusRequester() }
 
 
@@ -128,7 +128,7 @@ fun SearchScreen(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
 
-                                tagState.tagList.filter {
+                                tagList.filter {
                                     note.tags.contains(
                                         it.id
                                     )

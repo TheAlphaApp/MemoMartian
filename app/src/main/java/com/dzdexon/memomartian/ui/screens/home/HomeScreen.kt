@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,6 +56,7 @@ object HomeDestination : NavigationDestination {
     override val route: String = "home"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navigateToCreateNote: () -> Unit,
@@ -65,12 +67,20 @@ fun HomeScreen(
     viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val listOfNotes by viewModelHome.stateFlowOfListOfNotes.collectAsState()
-    val tagState by viewModelTag.tagState.collectAsState()
+    val tagList by viewModelTag.tagList.collectAsState()
 
     Scaffold(
         topBar = {
-            SearchBar(
-                onTap = navigateToSearchScreen
+            TopAppBar(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                title = {
+                    Text(text = "Notes")
+                },
+                actions = {
+                    IconButton(onClick = navigateToSearchScreen) {
+                        Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -89,7 +99,7 @@ fun HomeScreen(
         ) { innerPadding ->
         HomeBody(
             notesList = listOfNotes,
-            tagsList = tagState.tagList,
+            tagsList = tagList,
             onNoteClick = navigateToDetailScreen,
             modifier = modifier.padding(innerPadding),
         )

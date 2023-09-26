@@ -15,7 +15,7 @@ interface TagDao {
     fun getAllTags() : Flow<List<TagEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun createTag(tagEntity: TagEntity)
+    suspend fun createTag(tagEntity: TagEntity) : Long
 
     @Update
     suspend fun updateTag(tagEntity: TagEntity)

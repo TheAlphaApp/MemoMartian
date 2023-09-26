@@ -59,10 +59,13 @@ fun MemoMartianTheme(
             //changes the status bar background color
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
+            window.navigationBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = darkTheme
             //changes the status bar icon color
             WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
+                !darkTheme
+            WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars=
                 !darkTheme
         }
     }
