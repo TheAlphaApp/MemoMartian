@@ -1,27 +1,27 @@
 [versions]
-androidGradlePlugin = "8.1.1"
-androidxComposeBom = "2023.09.01"
+androidGradlePlugin = "8.1.2"
+androidxComposeBom = "2023.10.01"
 androidxComposeCompiler = "1.4.6"
 androidxCore = "1.12.0"
-androidMaterial = "1.11.0-alpha03"
+androidMaterial = "1.11.0-beta01"
 androidxAppCompat = "1.7.0-alpha02"
-androidxActivity = "1.7.2"
+androidxActivity = "1.8.0"
 navTransitions = "0.11.0-alpha"
 
 androidxLifecycle = "2.6.2"
-androidxNavigation = "2.7.3"
-androidxComposeMaterial3 = "1.2.0-alpha08"
+androidxNavigation = "2.7.4"
+androidxComposeMaterial3 = "1.2.0-alpha10"
 
 androidxTestExt = "1.1.5"
 androidxEspresso = "3.5.1"
 junit4 = "4.13.2"
-devtoolsKsp = "1.8.20-1.0.10"
-kotlin = "1.8.20"
+devtoolsKsp = "1.9.10-1.0.13"
+kotlin = "1.9.10"
 kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.5.1"
 
-room = "2.5.2"
+room = "2.6.0"
 
 junit = "1.1.5"
 
