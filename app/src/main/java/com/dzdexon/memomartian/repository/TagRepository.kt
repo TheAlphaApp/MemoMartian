@@ -7,4 +7,5 @@ interface TagRepository {
     fun getAllTagsStream(): Flow<List<Tag>>
     suspend fun createTag(tag: Tag) : Long
     suspend fun updateTag(tag: Tag)
+    suspend fun deleteTag(tag: Tag)
 }

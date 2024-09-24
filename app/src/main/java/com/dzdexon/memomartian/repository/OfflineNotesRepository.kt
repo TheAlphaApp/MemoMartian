@@ -22,4 +22,7 @@ class OfflineNotesRepository(private val notesDao: NotesDao) : NotesRepository {
 
     override suspend fun updateNote(note: Note) = notesDao.updateNote(note.asEntity())
 
+    override suspend fun deleteNote(note: Note) {
+        notesDao.deleteNote(note.asEntity())
+    }
 }

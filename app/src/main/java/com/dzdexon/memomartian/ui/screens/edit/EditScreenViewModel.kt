@@ -91,6 +91,12 @@ class EditScreenViewModel(
         }
     }
 
+    fun deleteNote() {
+        viewModelScope.launch {
+            notesRepository.deleteNote(note)
+        }
+    }
+
 
     private fun validateTagString(tagString: String): Boolean {
         val isTagExist = tagList.value.map {

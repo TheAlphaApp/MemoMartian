@@ -1,13 +1,19 @@
 package com.dzdexon.memomartian.ui.screens.edit
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.navigation.NavigationDestination
@@ -26,12 +32,14 @@ object EditScreenDestination : NavigationDestination {
 fun EditScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
+    navigateToHome: () -> Unit,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
     viewModelEdit: EditScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tagList = viewModelEdit.tagList.collectAsState()
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             NoteTopAppBar(
@@ -43,7 +51,26 @@ fun EditScreen(
                     }
                 },
                 title = "Edit Your Note",
-                modifier = Modifier.background(color = Color.Red)
+                modifier = Modifier.background(color = Color.Red),
+                actions = {
+                    IconButton(onClick = {
+                        viewModelEdit.deleteNote().also {
+                            Toast.makeText(
+                                context, "Note Deleted Permanently",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        coroutineScope.launch {
+                            navigateToHome()
+                        }
+
+
+
+                    }) {
+                        Icon(Icons.Filled.DeleteForever, contentDescription = "Delete Icon")
+
+                    }
+                }
             )
         },
     ) { innerPadding ->

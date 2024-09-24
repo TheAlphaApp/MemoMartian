@@ -127,6 +127,7 @@ fun HomeBody(
         LazyRow(
             modifier = Modifier.padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
+
         ) {
             items(items = newTagsList, key = { it.id }) { tag ->
                 FilterChip(label = {
@@ -142,6 +143,7 @@ fun HomeBody(
         LazyVerticalStaggeredGrid(
             modifier = Modifier.padding(horizontal = 8.dp),
             columns = StaggeredGridCells.Fixed(2),
+
         ) {
             items(items = notesList.filter { note ->
                 if (selectedTag == ALL_TAG) true

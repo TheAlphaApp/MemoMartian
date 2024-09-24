@@ -14,17 +14,17 @@ import com.dzdexon.memomartian.utils.MyTypeConverters
  * Database class with a singleton INSTANCE object.
  */
 @TypeConverters(MyTypeConverters::class)
-@Database(entities = [NoteEntity::class, TagEntity::class], version = 2, exportSchema = false)
+@Database(entities = [NoteEntity::class, TagEntity::class], version = 4, exportSchema = false)
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun notesDao(): NotesDao
     abstract fun tagDao(): TagDao
     companion object {
         @Volatile
-        private var Instance: NotesDatabase? = null
+        private var INSTANCE: NotesDatabase? = null
 
         fun getDatabase(context: Context): NotesDatabase {
             // if the Instance is not null, return it, otherwise create a new database instance.
-            return Instance ?: synchronized(this) {
+            return INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(context, NotesDatabase::class.java, "notes_database")
                 /**
                  * Setting this option in your app's database builder means that Room
@@ -33,7 +33,7 @@ abstract class NotesDatabase : RoomDatabase() {
                  */
                     .fallbackToDestructiveMigration()
                     .build()
-                    .also { Instance = it }
+                    .also { INSTANCE = it }
             }
         }
     }

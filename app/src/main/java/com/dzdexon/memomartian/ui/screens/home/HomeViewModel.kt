@@ -61,7 +61,7 @@ class HomeViewModel(
     }
 
     init {
-        createDummyData()
+//        createDummyData()
     }
 
     companion object {

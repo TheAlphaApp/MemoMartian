@@ -275,9 +275,11 @@ fun TagView(tagsList: List<String>) {
     ) {
         items(items = tagsList, key = { it }) { tag ->
             FilterChip(
+
                 label = {
                     Text(text = tag)
                 },
+
                 selected = false,
                 enabled = true,
                 onClick = {
@@ -291,7 +293,6 @@ fun TagView(tagsList: List<String>) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BuildImageSlider(sliderList: List<String> = listOf()) {
-
     val pagerState = rememberPagerState(
         initialPage = 1,
         initialPageOffsetFraction = 0f

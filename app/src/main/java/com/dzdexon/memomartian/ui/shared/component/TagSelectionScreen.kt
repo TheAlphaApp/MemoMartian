@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,6 +18,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -53,18 +55,22 @@ fun TagManageBottomSheet(
     onDismiss: () -> Unit
 ) {
     val modalBottomSheetState = rememberModalBottomSheetState()
-    ModalBottomSheet(
-        onDismissRequest = { onDismiss() },
-        sheetState = modalBottomSheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() },
+    Surface(
+        modifier = Modifier.imePadding()
     ) {
-        TagSelectionScreen(
-            addTagToNote = addTagToNote,
-            selectedTags = selectedTags,
-            removeTagFromNote = removeTagFromNote,
-            tagList = tagList,
-            createNewTag = createNewTag,
-        )
+        ModalBottomSheet(
+            onDismissRequest = { onDismiss() },
+            sheetState = modalBottomSheetState,
+            dragHandle = { BottomSheetDefaults.DragHandle() },
+        ) {
+            TagSelectionScreen(
+                addTagToNote = addTagToNote,
+                selectedTags = selectedTags,
+                removeTagFromNote = removeTagFromNote,
+                tagList = tagList,
+                createNewTag = createNewTag,
+            )
+        }
     }
 }
 
@@ -160,7 +166,10 @@ private fun TagSelectionScreen(
             }
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        FlowRow(
+        if (tagList.none { tag ->
+                !selectedTags.contains(tag.id)
+            })
+            FlowRow(
             modifier = Modifier.padding(8.dp),
         ) {
             tagList.filter { tag ->

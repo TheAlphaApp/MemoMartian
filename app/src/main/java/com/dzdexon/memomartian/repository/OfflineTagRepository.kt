@@ -19,4 +19,8 @@ class OfflineTagRepository(private val tagDao: TagDao) : TagRepository {
     }
 
     override suspend fun updateTag(tag: Tag) = tagDao.updateTag(tag.asEntity())
+
+    override suspend fun deleteTag(tag: Tag) {
+        tagDao.deleteTag(tag.asEntity())
+    }
 }
