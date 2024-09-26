@@ -1,34 +1,29 @@
 [versions]
-androidGradlePlugin = "8.5.0"
-androidxComposeBom = "2023.10.01"
-androidxComposeCompiler = "1.4.6"
-androidxCore = "1.12.0"
-androidMaterial = "1.11.0-beta01"
-androidxAppCompat = "1.7.0-alpha02"
-androidxActivity = "1.8.0"
-navTransitions = "0.11.0-alpha"
+androidGradlePlugin = "8.5.2"
+androidxComposeBom = "2024.09.02"
+androidxCore = "1.13.1"
+androidxAppCompat = "1.7.0"
+androidxActivity = "1.9.2"
+androidxLifecycle = "2.8.6"
+androidxNavigation = "2.8.1"
+androidxRoom = "2.6.1"
+androidxTestExtJunit = "1.2.1"
+androidxTestExtJunitKtx = "1.2.1"
+androidxTestEspresso = "3.6.1"
 
-androidxLifecycle = "2.6.2"
-androidxNavigation = "2.7.4"
-androidxComposeMaterial3 = "1.2.0-alpha10"
+androidMaterial = "1.12.0"
 
-androidxTestExt = "1.1.5"
-androidxEspresso = "3.5.1"
 junit4 = "4.13.2"
-devtoolsKsp = "1.9.10-1.0.13"
-kotlin = "1.9.10"
-kotlinxCoroutines = "1.7.3"
-kotlinxDatetime = "0.4.0"
-kotlinxSerializationJson = "1.5.1"
 
-room = "2.6.0"
+devtoolsKsp = "2.0.20-1.0.25"
+kotlin = "2.0.20"
+kotlinxCoroutinesAndroid = "1.9.0"
+kotlinxDatetime = "0.6.1"
+kotlinxSerializationJson = "1.7.3"
+kotlinxCollectionsImmutable = "0.3.8"
 
-junit = "1.1.5"
-
-kotlinxCollectionsImmutable = "0.3.4"
-
-gson = "2.10.1"
-coil = "2.4.0"
+gson = "2.11.0"
+coil = "2.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
@@ -42,8 +37,8 @@ androidx-compose-material-iconsExtended = { group = "androidx.compose.material",
 androidx-compose-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-material = { group = "androidx.compose.material", name = "material" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
-androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidxComposeMaterial3" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3"}
+androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class"}
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 
 #Compose UI Util
@@ -58,20 +53,20 @@ androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "li
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 
 #Kotlin Coroutines, serialization, datetime...
-kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 #Database
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
 
 #Test
-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
-androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
-androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
+androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExtJunitKtx" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxTestEspresso" }
 
 #gson
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
@@ -87,6 +82,7 @@ android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-gradlePlugin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "devtoolsKsp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [bundles]
 #compose bundle

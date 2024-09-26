@@ -7,7 +7,9 @@ data class Tag(
     val tagName: String,
 )
 
-fun Tag.asEntity() = TagEntity(
-    id = id,
-    tagName = tagName,
-)
+fun Tag.asEntity(): TagEntity {
+    return TagEntity(
+        id = id,
+        tagName = tagName,
+    )
+}

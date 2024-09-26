@@ -11,7 +11,9 @@ data class TagEntity(
     val tagName: String,
 )
 
-fun TagEntity.asExternalModel() = Tag(
-    id = id,
-    tagName = tagName,
-)
+fun TagEntity.asExternalModel(): Tag {
+    return Tag(
+        id = this.id,
+        tagName = this.tagName,
+    )
+}

@@ -12,14 +12,16 @@ data class Note(
     val imageUri: String? = null
 )
 
-fun Note.asEntity() = NoteEntity(
-    id = id,
-    title = title,
-    content = content,
-    tags = tags,
-    lastUpdate = lastUpdate,
-    imageUri = imageUri
-)
+fun Note.asEntity(): NoteEntity {
+    return NoteEntity(
+        id = this.id,
+        title = this.title,
+        content = this.content,
+        tags = this.tags,
+        lastUpdate = this.lastUpdate,
+        imageUri = this.imageUri
+    )
+}
 
 
 

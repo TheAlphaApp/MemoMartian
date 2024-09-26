@@ -22,10 +22,11 @@ abstract class NotesDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: NotesDatabase? = null
 
+        @Synchronized
         fun getDatabase(context: Context): NotesDatabase {
             // if the Instance is not null, return it, otherwise create a new database instance.
             return INSTANCE ?: synchronized(this) {
-                Room.databaseBuilder(context, NotesDatabase::class.java, "notes_database")
+                INSTANCE ?: Room.databaseBuilder(context, NotesDatabase::class.java, "notes_database")
                 /**
                  * Setting this option in your app's database builder means that Room
                  * permanently deletes all data from the tables in your database when it
@@ -37,4 +38,11 @@ abstract class NotesDatabase : RoomDatabase() {
             }
         }
     }
+
+    override fun close() {
+        INSTANCE?.close()
+        INSTANCE = null
+    }
+
+
 }

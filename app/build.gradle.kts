@@ -3,8 +3,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.gradlePlugin)
     alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.compose.compiler)
 }
-
+composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+}
 android {
     namespace = "com.dzdexon.memomartian"
     compileSdk = 34
@@ -39,9 +43,7 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
-    }
+
     packaging {
         resources {
             resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
@@ -51,6 +53,8 @@ android {
 
 dependencies {
     // Default
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.activity.compose)
@@ -75,5 +79,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.bundles.compose)
     debugImplementation(libs.bundles.compose)
+    androidTestImplementation(composeBom)
+
 
 }

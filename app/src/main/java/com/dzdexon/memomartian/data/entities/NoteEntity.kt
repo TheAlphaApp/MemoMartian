@@ -16,11 +16,13 @@ data class NoteEntity(
     val imageUri: String? = null
 )
 
-fun NoteEntity.asExternalModel() = Note(
-    id = id,
-    title = title,
-    content = content,
-    tags = tags,
-    lastUpdate = lastUpdate,
-    imageUri = imageUri
-)
+fun NoteEntity.asExternalModel(): Note {
+    return Note(
+        id = this.id,
+        title = this.title,
+        content = this.content,
+        tags = this.tags,
+        lastUpdate = this.lastUpdate,
+        imageUri = this.imageUri
+    )
+}
