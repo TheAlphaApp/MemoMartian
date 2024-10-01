@@ -46,10 +46,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
-import com.dzdexon.memomartian.model.Note
+import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.model.TagWithNotesModel
 import com.dzdexon.memomartian.navigation.NavigationDestination
-import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
 import com.dzdexon.memomartian.ui.shared.component.NoteCard
 
 object HomeDestination : NavigationDestination {
@@ -59,15 +59,14 @@ object HomeDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navigateToCreateNote: () -> Unit,
-    navigateToDetailScreen: (Int) -> Unit,
+    navigateToEditNote: (Long) -> Unit,
+    navigateToDetailScreen: (Long) -> Unit,
     navigateToSearchScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModelHome: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val listOfNotes by viewModelHome.stateFlowOfListOfNotes.collectAsState()
-    val tagList by viewModelTag.tagList.collectAsState()
+    val tagList by viewModelHome.stateFlowOfListOfTags.collectAsState()
 
     Scaffold(
         topBar = {
@@ -85,13 +84,21 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = navigateToCreateNote, modifier = Modifier.navigationBarsPadding()
+                onClick = {
+                    viewModelHome.createNewNote(navigateToEditNote)
+                },
+                modifier = Modifier.navigationBarsPadding()
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Items",
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
+                Row {
+
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Create New Note",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(text = "Create New Note")
+                }
+
             }
 
         },
@@ -102,24 +109,29 @@ fun HomeScreen(
             tagsList = tagList,
             onNoteClick = navigateToDetailScreen,
             modifier = modifier.padding(innerPadding),
+            viewModelHome = viewModelHome,
         )
 
     }
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+val ALL_TAG = Tag(tagId = 420373, tagName = "All")
+
 @Composable
 fun HomeBody(
-    notesList: List<Note>,
+    notesList: List<NoteWithTagsModel>,
     tagsList: List<Tag>,
-    onNoteClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    onNoteClick: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModelHome: HomeViewModel,
 ) {
-    val ALL_TAG = Tag(id = 420373, tagName = "All")
     var selectedTag by remember {
         mutableStateOf(ALL_TAG)
     }
+
+    val filteredItems: TagWithNotesModel? by viewModelHome.stateFlowTagWithNotes(selectedTag.tagId)
+        .collectAsState()
     val newTagsList = listOf(ALL_TAG) + tagsList
     Column(
         modifier = modifier, verticalArrangement = Arrangement.Top
@@ -129,7 +141,7 @@ fun HomeBody(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
 
         ) {
-            items(items = newTagsList, key = { it.id }) { tag ->
+            items(items = newTagsList, key = { it.tagId }) { tag ->
                 FilterChip(label = {
                     Text(text = tag.tagName)
                 }, selected = tag == selectedTag, onClick = {
@@ -139,21 +151,36 @@ fun HomeBody(
 
 
         }
+        if (selectedTag == ALL_TAG) {
+            LazyVerticalStaggeredGrid(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                columns = StaggeredGridCells.Fixed(2),
+            ) {
+                items(items = notesList, key = { it.note.noteId }) { noteWithTags ->
+                    NoteCard(
+                        note = noteWithTags.note, tagsList = noteWithTags.tags, onClick = onNoteClick
+                    )
+                }
+            }
 
-        LazyVerticalStaggeredGrid(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            columns = StaggeredGridCells.Fixed(2),
+        } else {
+            LazyVerticalStaggeredGrid(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                columns = StaggeredGridCells.Fixed(2),
+            ) {
+                filteredItems?.let { tagWithNotes ->
+                    items(items = tagWithNotes.notes, key = { it.noteId }) { note ->
 
-        ) {
-            items(items = notesList.filter { note ->
-                if (selectedTag == ALL_TAG) true
-                else note.tags.contains(selectedTag.id)
-            }, key = { it.id }) { note ->
-                NoteCard(
-                    note = note, tagsList = tagsList, onClick = onNoteClick
-                )
+                        NoteCard(
+                            note = note, tagsList = notesList.first {
+                                it.note.noteId == note.noteId
+                            }.tags, onClick = onNoteClick
+                        )
+                    }
+                }
             }
         }
+
     }
 
 }

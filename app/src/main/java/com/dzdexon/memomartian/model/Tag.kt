@@ -3,13 +3,13 @@ package com.dzdexon.memomartian.model
 import com.dzdexon.memomartian.data.entities.TagEntity
 
 data class Tag(
-    val id: Int = 0,
+    val tagId: Long = 0,
     val tagName: String,
 )
 
 fun Tag.asEntity(): TagEntity {
     return TagEntity(
-        id = id,
+        tagId = tagId,
         tagName = tagName,
     )
 }

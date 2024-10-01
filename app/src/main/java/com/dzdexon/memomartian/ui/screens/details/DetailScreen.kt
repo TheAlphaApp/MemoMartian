@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -25,8 +26,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.dzdexon.memomartian.AppViewModelProvider
+import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.navigation.NavigationDestination
-import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 
 object DetailScreenDestination : NavigationDestination {
@@ -40,66 +41,63 @@ object DetailScreenDestination : NavigationDestination {
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    navigateToEditScreen: (Int) -> Unit,
+    navigateToEditScreen: (Long) -> Unit,
     navigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
     viewModelDetail: DetailScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val note = viewModelDetail.uiState.collectAsState()
-    val tagList = viewModelTag.tagList.collectAsState()
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        topBar = {
-            NoteTopAppBar(
-                canNavigateBack = canNavigateBack,
-                navigateUp = navigateUp,
-                actions = {
-                    TextButton(
-                        onClick = { navigateToEditScreen(note.value.id) }) {
-                        Text(text = "Edit")
+    val noteWithTagsModel by viewModelDetail.uiState.collectAsState()
+    val note : Note? = noteWithTagsModel?.note
+    note?.let {
+        Scaffold(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            topBar = {
+                NoteTopAppBar(
+                    canNavigateBack = canNavigateBack,
+                    navigateUp = navigateUp,
+                    actions = {
+                        TextButton(
+                            onClick = { navigateToEditScreen(note.noteId) }) {
+                            Text(text = "Edit")
+                        }
                     }
-                }
-            )
-        },
-    ) { innerPadding ->
-        Card(
-            modifier = modifier
-                .padding(innerPadding)
-                .padding(16.dp)
-                .fillMaxWidth(),
-        ) {
-            Column(Modifier.padding(16.dp)) {
+                )
+            },
+        ) { innerPadding ->
+            Card(
+                modifier = modifier
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+            ) {
+                Column(Modifier.padding(16.dp)) {
 
-                if (note.value.imageUri != null && note.value.imageUri!!.isNotEmpty()) {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            ImageRequest
-                                .Builder(LocalContext.current)
-                                .data(data = Uri.parse(note.value.imageUri))
-                                .build()
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxHeight(0.3f)
-                            .fillMaxWidth()
-                            .padding(6.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                Text(text = note.value.title, style = MaterialTheme.typography.titleLarge)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = note.value.content, style = MaterialTheme.typography.bodyLarge)
-                tagList.value.filter { tag ->
-                    note.value.tags.contains(tag.id)
-                }.map {
-                    it.tagName
-                }.forEach { tag ->
-                    FilterChip(
-                        label = {
-                            Text(text = tag)
-                        },
-                        selected = true, onClick = { })
+                    if (!note.imageUri.isNullOrEmpty()) {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                ImageRequest
+                                    .Builder(LocalContext.current)
+                                    .data(data = Uri.parse(note.imageUri))
+                                    .build()
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxHeight(0.3f)
+                                .fillMaxWidth()
+                                .padding(6.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Text(text = note.title, style = MaterialTheme.typography.titleLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = note.content, style = MaterialTheme.typography.bodyLarge)
+                    noteWithTagsModel?.tags?.forEach { tag ->
+                        FilterChip(
+                            label = {
+                                Text(text = tag.tagName)
+                            },
+                            selected = true, onClick = { })
+                    }
                 }
             }
         }

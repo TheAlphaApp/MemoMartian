@@ -3,15 +3,15 @@ package com.dzdexon.memomartian.ui.screens.managetags
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.Tag
-import com.dzdexon.memomartian.repository.TagRepository
+import com.dzdexon.memomartian.repository.NotesRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
-class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel() {
+class TagManageViewModel(private val notesRepository: NotesRepository) : ViewModel() {
 
 
-    var tagList: StateFlow<List<Tag>> = tagRepository
+    var tagList: StateFlow<List<Tag>> = notesRepository
         .getAllTagsStream()
         .stateIn(
             scope = viewModelScope,
@@ -22,7 +22,7 @@ class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel()
 
     suspend fun updateTag(tag: Tag, tagString: String) {
         if (validateTagString(tagString)) {
-            tagRepository.updateTag(tag.copy(tagName = tagString))
+            notesRepository.updateTag(tag.copy(tagName = tagString))
         }
 
     }
@@ -36,7 +36,7 @@ class TagManageViewModel(private val tagRepository: TagRepository) : ViewModel()
 
     suspend fun createNewTag(tagString: String) {
         if (validateTagString(tagString)) {
-            tagRepository.createTag(Tag(tagName = tagString.trim()))
+            notesRepository.createTag(Tag(tagName = tagString.trim()))
         }
     }
 

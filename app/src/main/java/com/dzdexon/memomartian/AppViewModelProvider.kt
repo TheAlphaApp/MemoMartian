@@ -5,7 +5,6 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.dzdexon.memomartian.ui.screens.create.CreateScreenViewModel
 import com.dzdexon.memomartian.ui.screens.details.DetailScreenViewModel
 import com.dzdexon.memomartian.ui.screens.edit.EditScreenViewModel
 import com.dzdexon.memomartian.ui.screens.home.HomeViewModel
@@ -22,26 +21,22 @@ object AppViewModelProvider {
         //Initializer for HomeViewModel
         initializer {
             HomeViewModel(
-                notesApplication().container.notesRepository,
-                notesApplication().container.tagRepository
+                notesApplication().container.notesRepository
             )
         }
         initializer {
             EditScreenViewModel(
                 this.createSavedStateHandle(),
                 notesApplication().container.notesRepository,
-                notesApplication().container.tagRepository
-
             )
         }
 
-        initializer {
-            CreateScreenViewModel(
-                notesApplication().container.notesRepository,
-                notesApplication().container.tagRepository
-
-            )
-        }
+//        initializer {
+//            CreateScreenViewModel(
+//                notesApplication().container.notesRepository
+//
+//            )
+//        }
         initializer {
             DetailScreenViewModel(
                 this.createSavedStateHandle(),
@@ -50,7 +45,7 @@ object AppViewModelProvider {
         }
         initializer {
             TagManageViewModel(
-                notesApplication().container.tagRepository
+                notesApplication().container.notesRepository
             )
         }
         initializer {

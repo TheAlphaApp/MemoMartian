@@ -1,129 +1,196 @@
 package com.dzdexon.memomartian.ui.screens.edit
 
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.repository.NotesRepository
-import com.dzdexon.memomartian.repository.TagRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import okhttp3.internal.toImmutableList
 import java.time.OffsetDateTime
+
+
+data class EditScreenData(
+    val isLoading: Boolean = false,
+    val note: Note = Note(title = "", content = ""),
+    val allTags: List<Tag> = listOf(),
+    val selectedTags: List<Tag> = listOf(),
+    val error: String? = null,
+)
+
 
 class EditScreenViewModel(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository,
-    private val tagRepository: TagRepository,
 ) : ViewModel() {
-    private val emptyNote = Note(
-        id = 0,
-        title = "",
-        content = "",
-        tags = emptyList(),
-        lastUpdate = null,
-        imageUri = null
-    )
-    var note by mutableStateOf(emptyNote)
-        private set
-    private val noteId: Int = checkNotNull(savedStateHandle[EditScreenDestination.noteIdArgs])
+    private val noteId: Long = checkNotNull(savedStateHandle[EditScreenDestination.noteIdArgs])
 
+    private val _uiState =
+        mutableStateOf(EditScreenData(isLoading = true))
+    val uiState: State<EditScreenData> = _uiState
+    private fun getLatestData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                // Fetch all tags and the note with tags sequentially
+                val tagList = notesRepository.getAllTagsStream().first()
+                val noteWithTags = notesRepository.getNoteWithTags(noteId).first()
 
-    var tagList: StateFlow<List<Tag>> = tagRepository
-        .getAllTagsStream()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = listOf()
-        )
-        private set
+                // Update the UI state
+                _uiState.value = if (noteWithTags != null) {
+                    _uiState.value.copy(
+                        note = noteWithTags.note,
+                        allTags = tagList,
+                        selectedTags = noteWithTags.tags,
+                        error = null,
+                        isLoading = false
+                    )
+
+                } else {
+                    _uiState.value.copy(
+                        error = "Note not found"
+                    )
+                }
+            } catch (e: Exception) {
+                // Handle errors and update state accordingly
+                _uiState.value = _uiState.value.copy(error = "Error loading data: ${e.message}")
+            }
+        }
+    }
 
     init {
-        viewModelScope.launch {
-            note = notesRepository.getNoteStream(noteId)
-                .filterNotNull()
-                .first()
+        getLatestData()
+    }
+
+    fun saveNote() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _saveNote()
         }
     }
 
-
-    fun updateUiState(note: Note) {
-        this.note = note
+    private suspend fun _saveNote() {
+        val updatedNote = _uiState.value.note.copy(lastUpdate = OffsetDateTime.now())
+        _uiState.value = _uiState.value.copy(
+            note = updatedNote,
+            isLoading = true
+        )
+        notesRepository.updateNote(_uiState.value.note)
+        _uiState.value = _uiState.value.copy(isLoading = false)
     }
 
-    suspend fun updateTagInNote(tag: Tag, remove: Boolean = false) {
-        if (remove) {
-            if (note.tags.contains(tag.id)) {
-                val tags = note.tags.toMutableList()
-                tags.remove(tag.id)
-                note = note.copy(
-                    tags = tags
-                )
+    //    fun updateUiState(noteWithTagsModel: NoteWithTagsModel) {
+//        this.noteWithTagsModel = noteWithTagsModel
+//        saveNoteJob?.cancel()
+//
+//        // Launch a new coroutine with a delay for debouncing
+//        saveNoteJob = viewModelScope.launch {
+//            delay(500) // Wait for 500ms
+//            notesRepository.updateNote(noteWithTagsModel.note, noteWithTagsModel.tags.map { it.tagId }) // Save note after the user stops typing
+//        }
+//    }
+//    fun updateUiState(noteWithTagsModel: NoteWithTagsModel) {
+//        this.noteWithTagsModel = noteWithTagsModel
+//    }
+
+    enum class UpdateIt {
+        TITLE,
+        CONTENT,
+        IMAGE
+    }
+
+    fun updateUI(
+        title: String? = null,
+        content: String? = null,
+        image: String? = null,
+        updateIt: UpdateIt,
+    ) {
+        when (updateIt) {
+            UpdateIt.TITLE -> {
+                title?.let {
+                    _uiState.value = _uiState.value.copy(
+                        note = _uiState.value.note.copy(title = title)
+                    )
+                }
+
             }
+
+            UpdateIt.CONTENT -> {
+
+                content?.let {
+                    _uiState.value = _uiState.value.copy(
+                        note = _uiState.value.note.copy(content = content)
+                    )
+                }
+            }
+
+            UpdateIt.IMAGE -> {
+                image?.let {
+                    _uiState.value = _uiState.value.copy(
+                        note = _uiState.value.note.copy(imageUri = image)
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateTagInNote(tag: Tag, remove: Boolean = false) {
+        viewModelScope.launch {
+            _updateTagInNote(tag, remove)
+        }
+    }
+
+    private suspend fun _updateTagInNote(tag: Tag, remove: Boolean = false) {
+        // Update the tags based on the `remove` flag
+        if (remove) {
+            notesRepository.removeTagFromNote(_uiState.value.note.noteId, tag.tagId)
         } else {
-            val tags = note.tags.toMutableList()
-            tags.add(tag.id)
-            note = note.copy(
-                tags = tags
-            )
+            notesRepository.addTagInNote(_uiState.value.note.noteId, tag.tagId)
         }
-        notesRepository.updateNote(this.note)
+        _saveNote()
+
+        getLatestData()
+
     }
 
-    suspend fun updateNote() {
-        if (validateInput(this.note)) {
-            this.note = this.note.copy(lastUpdate = OffsetDateTime.now())
-            notesRepository.updateNote(this.note)
-        }
-    }
-
-    fun validateInput(uiState: Note = this.note): Boolean {
-        return with(uiState) {
-            title.isNotBlank() && content.isNotBlank()
-        }
-    }
-
+    //    fun validateInput(note: Note): Boolean {
+//        return note.title.isNotBlank() && note.content.isNotBlank()
+//    }
     fun deleteNote() {
         viewModelScope.launch {
-            notesRepository.deleteNote(note)
+            if (_uiState.value.note.noteId > 0)
+                notesRepository.deleteNote(_uiState.value.note)
         }
     }
 
 
     private fun validateTagString(tagString: String): Boolean {
-        val isTagExist = tagList.value.map {
+        val isTagExist = _uiState.value.allTags.map {
             it.tagName.trim()
         }.contains(tagString) || tagString.trim() == "All"
         return tagString.isNotBlank() && tagString.isNotEmpty() && !isTagExist
     }
 
-    fun createNewTag(tagString: String): Boolean {
-        if (validateTagString(tagString)) {
-            val isCompleted = viewModelScope.launch {
-                tagRepository.createTag(Tag(tagName = tagString.trim())).also { id ->
-                    val tags = note.tags.toMutableList()
-                    tags.add(id.toInt())
-                    note = note.copy(
-                        tags = tags.toImmutableList()
-                    )
-                    notesRepository.updateNote(note)
+    fun createNewTag(tagString: String) {
+        if (validateTagString(tagString))
+            viewModelScope.launch {
+                val id = notesRepository.createTag(Tag(tagName = tagString.trim()))
+                if (id > 0) {
+                    updateTagInNote(
+                        Tag(
+                            tagId = id,
+                            tagName = tagString.trim()
+                        )
+                    ) // Tag creation successful
                 }
-            }.isCompleted
+                getLatestData()
+            }
 
-            return isCompleted
-        }
-        return false
     }
 
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
-    }
+//    companion object {
+//        private const val TIMEOUT_MILLIS = 5_000L
+//    }
 }

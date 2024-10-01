@@ -1,7 +1,6 @@
 package com.dzdexon.memomartian.ui.shared.component
 
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -13,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ModalBottomSheet
@@ -22,26 +19,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.model.Tag
-import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,9 +36,9 @@ import kotlinx.coroutines.launch
 fun TagManageBottomSheet(
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
-    selectedTags: List<Int>,
+    selectedTags: List<Tag>,
     tagList: List<Tag>,
-    createNewTag: (String) -> Boolean,
+    createNewTag: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
     val modalBottomSheetState = rememberModalBottomSheetState()
@@ -76,38 +63,22 @@ fun TagManageBottomSheet(
 
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
+    ExperimentalLayoutApi::class,
 )
 @Composable
 private fun TagSelectionScreen(
     tagList: List<Tag>,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
-    createNewTag: (String) -> Boolean,
-    selectedTags: List<Int>,
+    createNewTag: (String) -> Unit,
+    selectedTags: List<Tag>,
 ) {
     var newTagString by remember {
         mutableStateOf("")
     }
-    val haptics = LocalHapticFeedback.current
-    val context = LocalContext.current
-
+    val selectedTagIDs = selectedTags.map { it.tagId }
     fun invokeOnCreatingNewTag() {
-        val isTagCreated = createNewTag(newTagString)
-        if (isTagCreated) {
-            newTagString = ""
-            Toast.makeText(
-                context, "New tag added",
-                Toast.LENGTH_LONG
-            ).show()
-            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-        } else {
-            Toast.makeText(
-                context, "Tag is not created",
-                Toast.LENGTH_LONG
-            ).show()
-            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-        }
+        createNewTag(newTagString)
     }
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
@@ -147,16 +118,16 @@ private fun TagSelectionScreen(
             modifier = Modifier.padding(8.dp),
         ) {
             tagList.filter { tag ->
-                selectedTags.contains(tag.id)
+                selectedTagIDs.contains(tag.tagId)
             }.forEach { tag ->
                 FilterChip(
                     modifier = Modifier.padding(horizontal = 4.dp),
                     label = {
                         Text(text = "#${tag.tagName}")
                     },
-                    selected = selectedTags.contains(tag.id),
+                    selected = selectedTagIDs.contains(tag.tagId),
                     onClick = {
-                        if (selectedTags.contains(tag.id)) {
+                        if (selectedTagIDs.contains(tag.tagId)) {
                             removeTagFromNote(tag)
                         } else {
                             addTagToNote(tag)
@@ -164,100 +135,100 @@ private fun TagSelectionScreen(
                     },
                 )
             }
+            
         }
         Spacer(modifier = Modifier.padding(8.dp))
         if (tagList.none { tag ->
-                !selectedTags.contains(tag.id)
+                !selectedTagIDs.contains(tag.tagId)
             })
             FlowRow(
-            modifier = Modifier.padding(8.dp),
-        ) {
-            tagList.filter { tag ->
-                !selectedTags.contains(tag.id)
-            }.forEach { tag ->
-                FilterChip(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp),
-                    label = {
-                        Text(text = "#${tag.tagName}")
-                    },
-                    selected = selectedTags.contains(tag.id),
-                    onClick = {
+                modifier = Modifier.padding(8.dp),
+            ) {
+                tagList.filter { tag ->
+                    !selectedTagIDs.contains(tag.tagId)
+                }.forEach { tag ->
+                    FilterChip(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp),
+                        label = {
+                            Text(text = "#${tag.tagName}")
+                        },
+                        selected = selectedTagIDs.contains(tag.tagId),
+                        onClick = {
 //                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
 //                            showTagUpdateDialog = true
 //                            updatingTag = tag
-                        if (selectedTags.contains(tag.id)) {
-                            removeTagFromNote(tag)
-                        } else {
-                            addTagToNote(tag)
-                        }
-                    },
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun TagUpdateDialog(
-    onDismiss: () -> Unit,
-    tag: Tag,
-    viewModel: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory)
-) {
-    var newTagString by remember {
-        mutableStateOf(tag.tagName)
-    }
-    val coroutineScope = rememberCoroutineScope()
-
-    CustomDialog(
-        onDismissRequest = onDismiss,
-        primaryButtonEnabled = false,
-        onPrimaryButtonClick = {},
-        secondaryButtonText = "Cancel",
-        onSecondaryButtonClick = onDismiss
-    ) {
-        Column {
-            TextField(
-                value = newTagString,
-                onValueChange = {
-                    newTagString = it
-                },
-                placeholder = {
-                    Text(text = "Tag Name")
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                )
-            )
-            ElevatedButton(
-                onClick = {
-                    coroutineScope.launch {
-                        viewModel.updateTag(tag, newTagString)
-                    }.invokeOnCompletion {
-                        onDismiss()
-                    }
-
+                            if (selectedTagIDs.contains(tag.tagId)) {
+                                removeTagFromNote(tag)
+                            } else {
+                                addTagToNote(tag)
+                            }
+                        },
+                    )
                 }
-            ) {
-                Text(text = "Update")
             }
-            ElevatedButton(
-                onClick = { /*TODO*/
-                    onDismiss()
-                },
-                colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color.Red
-                )
-            ) {
-                Text(text = "Delete")
-            }
-        }
     }
 }
+//
+//@Composable
+//fun TagUpdateDialog(
+//    onDismiss: () -> Unit,
+//    tag: Tag,
+//) {
+//    var newTagString by remember {
+//        mutableStateOf(tag.tagName)
+//    }
+//    val coroutineScope = rememberCoroutineScope()
+//
+//    CustomDialog(
+//        onDismissRequest = onDismiss,
+//        primaryButtonEnabled = false,
+//        onPrimaryButtonClick = {},
+//        secondaryButtonText = "Cancel",
+//        onSecondaryButtonClick = onDismiss
+//    ) {
+//        Column {
+//            TextField(
+//                value = newTagString,
+//                onValueChange = {
+//                    newTagString = it
+//                },
+//                placeholder = {
+//                    Text(text = "Tag Name")
+//                },
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+//                modifier = Modifier.fillMaxWidth(),
+//                singleLine = true,
+//                colors = TextFieldDefaults.colors(
+//                    focusedContainerColor = Color.Transparent,
+//                    unfocusedContainerColor = Color.Transparent,
+//                    disabledContainerColor = Color.Transparent,
+//                    focusedIndicatorColor = Color.Transparent,
+//                    unfocusedIndicatorColor = Color.Transparent,
+//                )
+//            )
+//            ElevatedButton(
+//                onClick = {
+//                    coroutineScope.launch {
+//                        viewModel.updateTag(tag, newTagString)
+//                    }.invokeOnCompletion {
+//                        onDismiss()
+//                    }
+//
+//                }
+//            ) {
+//                Text(text = "Update")
+//            }
+//            ElevatedButton(
+//                onClick = { /*TODO*/
+//                    onDismiss()
+//                },
+//                colors = ButtonDefaults.elevatedButtonColors(
+//                    containerColor = Color.Red
+//                )
+//            ) {
+//                Text(text = "Delete")
+//            }
+//        }
+//    }
+//}

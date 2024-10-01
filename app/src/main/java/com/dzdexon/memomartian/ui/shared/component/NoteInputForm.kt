@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,7 +29,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -58,21 +56,20 @@ import coil.size.Scale
 import com.dzdexon.memomartian.NotesApplication
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.ui.screens.edit.EditScreenViewModel
 import kotlin.math.absoluteValue
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteInputForm(
     note: Note,
-    isNoteValid: Boolean,
+    selectedTags: List<Tag>,
+    viewModelEdit: EditScreenViewModel,
     modifier: Modifier = Modifier,
-    onValueChange: (Note) -> Unit = {},
     onSaveClick: () -> Unit,
     tagList: List<Tag>,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
-    createNewTag: (String) -> Boolean,
+    createNewTag: (String) -> Unit,
 ) {
     var showTagDialog by rememberSaveable {
         mutableStateOf(false)
@@ -104,9 +101,7 @@ fun NoteInputForm(
                 } else {
                     imageString
                 }
-                onValueChange(
-                    note.copy(imageUri = newString)
-                )
+                viewModelEdit.updateUI(image = newString, updateIt = EditScreenViewModel.UpdateIt.IMAGE)
                 Log.d("Note UI Image ", note.imageUri.toString())
 
             }
@@ -118,7 +113,7 @@ fun NoteInputForm(
         TagManageBottomSheet(
             addTagToNote = addTagToNote,
             removeTagFromNote = removeTagFromNote,
-            selectedTags = note.tags,
+            selectedTags = selectedTags,
             tagList = tagList,
             createNewTag = createNewTag,
         ) {
@@ -153,7 +148,7 @@ fun NoteInputForm(
 
         TextField(
             value = note.title,
-            onValueChange = { onValueChange(note.copy(title = it)) },
+            onValueChange = { viewModelEdit.updateUI(title = it, updateIt = EditScreenViewModel.UpdateIt.TITLE) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             placeholder = { Text("Title", style = MaterialTheme.typography.titleLarge) },
             modifier = Modifier.fillMaxWidth(),
@@ -169,7 +164,7 @@ fun NoteInputForm(
         )
         TextField(
             value = note.content,
-            onValueChange = { onValueChange(note.copy(content = it)) },
+            onValueChange = { viewModelEdit.updateUI(content = it, updateIt = EditScreenViewModel.UpdateIt.CONTENT)  },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             placeholder = { Text("Content", style = MaterialTheme.typography.bodyLarge) },
             modifier = Modifier.fillMaxWidth(),
@@ -185,11 +180,7 @@ fun NoteInputForm(
 
         )
         TagView(
-            tagList.filter { tag ->
-                note.tags.contains(tag.id)
-            }.map {
-                it.tagName
-            }
+            selectedTags.map { it.tagName }.toList()
         )
         ElevatedButton(
             onClick = {
@@ -214,7 +205,7 @@ fun NoteInputForm(
             }
         }
 
-        if (isNoteValid) Button(
+         Button(
             onClick = onSaveClick,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -240,15 +231,15 @@ fun NoteInputForm(
                 LazyVerticalStaggeredGrid(
                     columns = StaggeredGridCells.Adaptive(100.dp)
                 ) {
-                    items(items = tagList, key = { it.id }) { tag ->
+                    items(items = tagList, key = { it.tagId }) { tag ->
                         FilterChip(
                             modifier = Modifier.padding(horizontal = 8.dp),
                             label = {
                                 Text(text = tag.tagName)
                             },
-                            selected = note.tags.contains(tag.id),
+                            selected = selectedTags.contains(tag),
                             onClick = {
-                                if (note.tags.contains(tag.id)) {
+                                if (selectedTags.map { it.tagId }.contains(tag.tagId)) {
                                     removeTagFromNote(tag)
                                 } else {
                                     addTagToNote(tag)
@@ -264,8 +255,6 @@ fun NoteInputForm(
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagView(tagsList: List<String>) {
     LazyRow(
@@ -290,7 +279,6 @@ fun TagView(tagsList: List<String>) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BuildImageSlider(sliderList: List<String> = listOf()) {
     val pagerState = rememberPagerState(

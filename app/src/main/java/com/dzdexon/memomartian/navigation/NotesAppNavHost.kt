@@ -15,8 +15,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.dzdexon.memomartian.ui.screens.create.CreateScreen
-import com.dzdexon.memomartian.ui.screens.create.CreateScreenDestination
 import com.dzdexon.memomartian.ui.screens.details.DetailScreen
 import com.dzdexon.memomartian.ui.screens.details.DetailScreenDestination
 import com.dzdexon.memomartian.ui.screens.edit.EditScreen
@@ -41,8 +39,8 @@ fun NotesAppNavHost(
         ) {
             Log.d("NAV", "Navigate to HomeScreen")
             HomeScreen(
-                navigateToCreateNote = {
-                    navController.navigate(CreateScreenDestination.route)
+                navigateToEditNote = {
+                    navController.navigate("${EditScreenDestination.route}/${it}")
                 },
                 navigateToDetailScreen = {
                     navController.navigate("${DetailScreenDestination.route}/${it}")
@@ -55,7 +53,7 @@ fun NotesAppNavHost(
         customComposable(
             route = EditScreenDestination.routeWithArgs,
             arguments = listOf(navArgument(EditScreenDestination.noteIdArgs) {
-                type = NavType.IntType
+                type = NavType.LongType
             }),
         ) {
             Log.d("NAV", "Navigate to EditScreen")
@@ -77,20 +75,20 @@ fun NotesAppNavHost(
                 }
             )
         }
-        customComposable(
-            route = CreateScreenDestination.route,
-        ) {
-            Log.d("NAV", "Navigate to CreateScreen")
-
-            CreateScreen(
-                navigateBack = {
-                    navController.popBackStack()
-                },
-                navigateUp = {
-                    navController.navigateUp()
-                },
-            )
-        }
+//        customComposable(
+//            route = CreateScreenDestination.route,
+//        ) {
+//            Log.d("NAV", "Navigate to CreateScreen")
+//
+//            CreateScreen(
+//                navigateBack = {
+//                    navController.popBackStack()
+//                },
+//                navigateUp = {
+//                    navController.navigateUp()
+//                },
+//            )
+//        }
         customComposable(
             route = DetailScreenDestination.routeWithArgs,
             arguments = listOf(navArgument(DetailScreenDestination.noteIdArgs) {

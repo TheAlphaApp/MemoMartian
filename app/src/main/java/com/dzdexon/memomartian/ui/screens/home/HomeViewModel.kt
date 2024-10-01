@@ -3,9 +3,10 @@ package com.dzdexon.memomartian.ui.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.Note
+import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.model.TagWithNotesModel
 import com.dzdexon.memomartian.repository.NotesRepository
-import com.dzdexon.memomartian.repository.TagRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -14,31 +15,35 @@ import java.time.OffsetDateTime
 
 class HomeViewModel(
     private val notesRepository: NotesRepository,
-    private val tagRepository: TagRepository
 ) : ViewModel() {
-    private val dummyData = Note(
-        id = 0,
+    private val dummyNote = Note(
+        noteId = 0,
         title = "Hello there",
         content = "room",
-        tags = listOf(451, 582, 203),
         lastUpdate = OffsetDateTime.now(),
         imageUri = null
     )
-    private val dummyTagData: List<Tag> = listOf(
-        Tag(451, "Hours"),
-        Tag(582, "Minutes"),
-        Tag(203, "Seconds"),
-        Tag(656, "Kalyan"),
-    )
 
-    val stateFlowOfListOfNotes: StateFlow<List<Note>> = notesRepository
+
+    val stateFlowOfListOfNotes: StateFlow<List<NoteWithTagsModel>> = notesRepository
         .getAllNotesStream()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
             initialValue = listOf()
         )
-    private val stateFlowOfListOfTags: StateFlow<List<Tag>> = tagRepository
+
+    fun stateFlowTagWithNotes(tagId: Long): StateFlow<TagWithNotesModel?> {
+        return notesRepository
+            .getTagWithNotes(tagId)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                initialValue = null
+            )
+    }
+
+    val stateFlowOfListOfTags: StateFlow<List<Tag>> = notesRepository
         .getAllTagsStream()
         .stateIn(
             scope = viewModelScope,
@@ -46,23 +51,30 @@ class HomeViewModel(
             initialValue = listOf()
         )
 
-
-
-
-
-    private fun createDummyData() {
-        if (stateFlowOfListOfNotes.value.isEmpty() || stateFlowOfListOfTags.value.isEmpty())
-            viewModelScope.launch {
-                notesRepository.createNote(dummyData)
-                dummyTagData.forEach {
-                tagRepository.createTag(it)
+    fun createNewNote(callback: (Long) -> Unit) {
+        viewModelScope.launch {
+            try {
+               val id =  notesRepository.createEmptyNote()
+                callback(id)
+            } catch (e: Exception) {
+                // Handle the error (e.g., show a message) TODO:
             }
         }
     }
 
-    init {
+//    private fun createDummyData() {
+//        if (stateFlowOfListOfNotes.value.isEmpty() || stateFlowOfListOfTags.value.isEmpty())
+//            viewModelScope.launch {
+//                notesRepository.createNote(dummyData)
+//                dummyTagData.forEach {
+//                tagRepository.createTag(it)
+//            }
+//        }
+//    }
+
+//    init {
 //        createDummyData()
-    }
+//    }
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L

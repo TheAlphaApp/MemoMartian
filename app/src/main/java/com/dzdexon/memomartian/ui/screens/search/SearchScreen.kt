@@ -32,7 +32,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.screens.home.SearchBar
-import com.dzdexon.memomartian.ui.screens.managetags.TagManageViewModel
 import com.dzdexon.memomartian.utils.HelperFunctions
 
 
@@ -44,14 +43,13 @@ object SearchScreenDestination : NavigationDestination {
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    navigateToDetailScreen: (Int) -> Unit,
+//    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToDetailScreen: (Long) -> Unit,
     navigateUp: () -> Unit
 ) {
     val searchText by viewModel.searchText.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
     val notes by viewModel.notes.collectAsState()
-    val tagList by viewModelTag.tagList.collectAsState()
     val focusRequester = remember { FocusRequester() }
 
 
@@ -105,12 +103,13 @@ fun SearchScreen(
 
                     items(
                         items = notes
-                    ) { note ->
+                    ) { noteWithTags ->
+                        val note = noteWithTags.note
                         Card(modifier = Modifier
                             .padding(4.dp)
                             .fillMaxWidth()
                             .clickable {
-                                navigateToDetailScreen(note.id)
+                                navigateToDetailScreen(note.noteId)
                             }) {
 
                             Column(Modifier.padding(16.dp)) {
@@ -128,14 +127,11 @@ fun SearchScreen(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
 
-                                tagList.filter {
-                                    note.tags.contains(
-                                        it.id
+                                noteWithTags.tags.forEach {
+                                    Text(
+                                        text = it.tagName,
+                                        style = MaterialTheme.typography.labelSmall
                                     )
-                                }.map { filteredTag ->
-                                    filteredTag.tagName
-                                }.forEach {
-                                    Text(text = it, style = MaterialTheme.typography.labelSmall)
                                 }
                             }
                         }

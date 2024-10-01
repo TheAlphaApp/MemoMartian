@@ -11,17 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.ui.screens.edit.EditScreenViewModel
 
 @Composable
 fun EditNoteBody(
     note: Note,
-    tagList: List<Tag>,
-    isNoteValid: Boolean,
-    onNoteValueChange: (Note) -> Unit,
+    selectedTags: List<Tag>,
+    viewModelEdit: EditScreenViewModel,
+    allTags: List<Tag>,
     onSaveClick: () -> Unit,
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
-    createNewTag: (String) -> Boolean,
+    createNewTag: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -35,13 +36,13 @@ fun EditNoteBody(
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             NoteInputForm(
+                viewModelEdit = viewModelEdit,
                 note = note,
-                onValueChange = onNoteValueChange,
-                tagList = tagList,
+                tagList = allTags,
                 addTagToNote = addTagToNote,
                 removeTagFromNote = removeTagFromNote,
                 onSaveClick = onSaveClick,
-                isNoteValid = isNoteValid,
+                selectedTags = selectedTags,
                 createNewTag = createNewTag,
             )
 

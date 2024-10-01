@@ -8,20 +8,18 @@ import java.time.OffsetDateTime
 @Entity(tableName = "notes")
 data class NoteEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val noteId: Long = 0,
     val title: String,
     val content: String,
-    val tags: List<Int>,
     val lastUpdate: OffsetDateTime? = null,
     val imageUri: String? = null
 )
 
 fun NoteEntity.asExternalModel(): Note {
     return Note(
-        id = this.id,
+        noteId = this.noteId,
         title = this.title,
         content = this.content,
-        tags = this.tags,
         lastUpdate = this.lastUpdate,
         imageUri = this.imageUri
     )
