@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -19,6 +22,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CellTower
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -26,12 +33,17 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,16 +53,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.RoomDatabase
 import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.model.TagWithNotesModel
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NoteCard
+import com.dzdexon.memomartian.ui.theme.LocalCustomColors
+import com.dzdexon.memomartian.R
+import com.dzdexon.memomartian.data.NotesDao_Impl
+import com.dzdexon.memomartian.repository.OfflineNotesRepository
 
 object HomeDestination : NavigationDestination {
     override val route: String = "home"
@@ -67,48 +92,145 @@ fun HomeScreen(
 ) {
     val listOfNotes by viewModelHome.stateFlowOfListOfNotes.collectAsState()
     val tagList by viewModelHome.stateFlowOfListOfTags.collectAsState()
-
+    val colors = LocalCustomColors.current
     Scaffold(
+        containerColor = colors.primary,
         topBar = {
             TopAppBar(
-                modifier = Modifier.padding(horizontal = 8.dp),
+                colors = TopAppBarColors(
+                    containerColor = colors.primary,
+                    scrolledContainerColor = colors.primary,
+                    navigationIconContentColor = colors.onPrimary,
+                    titleContentColor = colors.onPrimary,
+                    actionIconContentColor = colors.onPrimary,
+                ),
                 title = {
-                    Text(text = "Notes")
+                    Text(
+                        text = "Notes",
+                        fontSize = 32.sp,
+                        fontFamily = FontFamily(Font(R.font.ntype82_headline)),
+                    )
+
                 },
                 actions = {
                     IconButton(onClick = navigateToSearchScreen) {
                         Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
                     }
+                    IconButton(onClick = navigateToSearchScreen) {
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More Menu")
+                    }
                 }
             )
         },
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .padding(
+                        top = 0.dp,
+                        bottom = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    ) // This adds padding around the navigation bar
+                    .background(Color.Transparent) // Make the padding transparent
+                    .clip(RoundedCornerShape(16.dp)) // Clip to rounded corners
+            ) {
+                NavigationBar(
+                    containerColor = colors.tertiary,
+                    contentColor = colors.onTertiary,
+
+                    modifier = Modifier
+                        .background(colors.tertiary) // The color of the navigation bar
+                        .fillMaxWidth() // Make it fill the width
+                ) {
+                    // Add your navigation items here
+                    NavigationBarItem(
+                        colors = NavigationBarItemColors(
+                            selectedIconColor = colors.onPrimary,
+                            selectedTextColor = colors.onPrimary,
+                            selectedIndicatorColor = Color.Transparent,
+                            unselectedIconColor = colors.onTertiary,
+                            unselectedTextColor = colors.onTertiary,
+                            disabledIconColor = colors.onTertiary,
+                            disabledTextColor = colors.onTertiary
+                        ),
+                        selected = true,
+                        onClick = { /* Handle home click */ },
+                        icon = { Icon(Icons.Default.Home, contentDescription = null) }
+                    )
+                    NavigationBarItem(colors = NavigationBarItemColors(
+                        selectedIconColor = colors.accent,
+                        selectedTextColor = colors.accent,
+                        selectedIndicatorColor = colors.onPrimary,
+                        unselectedIconColor = colors.onTertiary,
+                        unselectedTextColor = colors.onTertiary,
+                        disabledIconColor = colors.onTertiary,
+                        disabledTextColor = colors.onTertiary
+                    ),
+
+                        selected = false,
+                        onClick = { /* Handle search click */ },
+
+                        icon = { Icon(Icons.Default.Search, contentDescription = null) }
+                    )
+                    NavigationBarItem(
+                        colors = NavigationBarItemColors(
+                            selectedIconColor = colors.accent,
+                            selectedTextColor = colors.accent,
+                            selectedIndicatorColor = colors.onPrimary,
+                            unselectedIconColor = colors.onTertiary,
+                            unselectedTextColor = colors.onTertiary,
+                            disabledIconColor = colors.onTertiary,
+                            disabledTextColor = colors.onTertiary
+                        ),
+                        selected = false,
+                        onClick = { /* Handle profile click */ },
+
+                        icon = { Icon(Icons.Default.Person, contentDescription = null) }
+                    )
+                    NavigationBarItem(
+                        colors = NavigationBarItemColors(
+                            selectedIconColor = colors.accent,
+                            selectedTextColor = colors.accent,
+                            selectedIndicatorColor = colors.onPrimary,
+                            unselectedIconColor = colors.onTertiary,
+                            unselectedTextColor = colors.onTertiary,
+                            disabledIconColor = colors.onTertiary,
+                            disabledTextColor = colors.onTertiary
+                        ),
+                        selected = false,
+                        onClick = { /* Handle profile click */ },
+
+                        icon = { Icon(Icons.Default.Person, contentDescription = null) }
+                    )
+                }
+            }
+        },
         floatingActionButton = {
             FloatingActionButton(
+                containerColor = colors.accent,
+                contentColor = colors.onPrimary,
                 onClick = {
                     viewModelHome.createNewNote(navigateToEditNote)
                 },
                 modifier = Modifier.navigationBarsPadding()
             ) {
-                Row {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Create New Note",
 
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Create New Note",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(text = "Create New Note")
-                }
+                )
 
             }
 
         },
 
         ) { innerPadding ->
+
         HomeBody(
             notesList = listOfNotes,
             tagsList = tagList,
             onNoteClick = navigateToDetailScreen,
-            modifier = modifier.padding(innerPadding),
+            modifier = modifier,
             viewModelHome = viewModelHome,
         )
 
@@ -133,24 +255,41 @@ fun HomeBody(
     val filteredItems: TagWithNotesModel? by viewModelHome.stateFlowTagWithNotes(selectedTag.tagId)
         .collectAsState()
     val newTagsList = listOf(ALL_TAG) + tagsList
+    val colors = LocalCustomColors.current
     Column(
         modifier = modifier, verticalArrangement = Arrangement.Top
     ) {
+        Box(Modifier.height(64.dp))
         LazyRow(
             modifier = Modifier.padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
 
         ) {
             items(items = newTagsList, key = { it.tagId }) { tag ->
-                FilterChip(label = {
-                    Text(text = tag.tagName)
-                }, selected = tag == selectedTag, onClick = {
-                    selectedTag = tag
-                })
+                Box(
+                    modifier = Modifier.clip(RoundedCornerShape(16.dp)).clickable(
+                       onClick = {
+                           selectedTag = tag
+                       }
+                    )
+                        .background(
+                            color =
+                            if (selectedTag == tag) {
+                                colors.accent
+                            } else {
+                                Color.Transparent
+                            }
+                        )
+
+                ) {
+                    Text(text = "#" + tag.tagName,modifier = modifier.padding(horizontal = 12.dp, vertical = 4.dp), color = colors.onPrimary)
+                }
+
             }
 
 
         }
+        Box(modifier.height(8.dp))
         if (selectedTag == ALL_TAG) {
             LazyVerticalStaggeredGrid(
                 modifier = Modifier.padding(horizontal = 8.dp),
@@ -158,7 +297,9 @@ fun HomeBody(
             ) {
                 items(items = notesList, key = { it.note.noteId }) { noteWithTags ->
                     NoteCard(
-                        note = noteWithTags.note, tagsList = noteWithTags.tags, onClick = onNoteClick
+                        note = noteWithTags.note,
+                        tagsList = noteWithTags.tags,
+                        onClick = onNoteClick
                     )
                 }
             }
@@ -273,3 +414,25 @@ fun SearchBar(
     }
 }
 
+
+@Composable
+fun FloatingBottomBar() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .padding(32.dp)
+            .background(Color.Cyan)
+            .clickable { /* Handle click for a specific action */ },
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            Text(text = "Home", color = Color.White)
+            Text(text = "Search", color = Color.White)
+            Text(text = "Profile", color = Color.White)
+        }
+    }
+}
