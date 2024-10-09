@@ -8,16 +8,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.dzdexon.memomartian.R
 
-val poppinsFamily = FontFamily(
-    Font(R.font.poppins_regular, FontWeight.Normal),
-    Font(R.font.poppins_medium, FontWeight.Medium),
-    Font(R.font.poppins_semi_bold, FontWeight.SemiBold),
-    Font(R.font.poppins_bold, FontWeight.Bold),
-    Font(R.font.poppins_black, FontWeight.Black),
-    Font(R.font.poppins_extra_bold, FontWeight.ExtraBold),
-    Font(R.font.poppins_light, FontWeight.Light),
-    Font(R.font.poppins_thin, FontWeight.Thin),
-    Font(R.font.poppins_extra_light, FontWeight.ExtraLight),
+val ibmPlexMono = FontFamily(
+    Font(R.font.ibm_plex_mono_regular, FontWeight.Normal)
 )
 val latoFamily = FontFamily(
     Font(R.font.lato_regular, FontWeight.Normal),
@@ -28,6 +20,7 @@ val latoFamily = FontFamily(
     Font(R.font.lato_italic, style = FontStyle.Italic),
 )
 private val defaultTypography = Typography()
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = defaultTypography.bodyLarge.copy(

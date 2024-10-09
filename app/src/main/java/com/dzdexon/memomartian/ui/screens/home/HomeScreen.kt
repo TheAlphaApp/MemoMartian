@@ -1,12 +1,13 @@
 package com.dzdexon.memomartian.ui.screens.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -22,13 +23,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CellTower
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +34,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -53,19 +49,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.RoomDatabase
 import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.model.Tag
@@ -74,8 +67,7 @@ import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NoteCard
 import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 import com.dzdexon.memomartian.R
-import com.dzdexon.memomartian.data.NotesDao_Impl
-import com.dzdexon.memomartian.repository.OfflineNotesRepository
+import com.dzdexon.memomartian.ui.theme.ibmPlexMono
 
 object HomeDestination : NavigationDestination {
     override val route: String = "home"
@@ -114,10 +106,11 @@ fun HomeScreen(
                 },
                 actions = {
                     IconButton(onClick = navigateToSearchScreen) {
-                        Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
+                        Image(painter = painterResource(R.drawable.search_white), contentDescription = null)
+//                        Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
                     }
                     IconButton(onClick = navigateToSearchScreen) {
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More Menu")
+                        Icon(imageVector = Icons.Default.MoreVert, modifier = modifier.size(24.dp), contentDescription = "More Menu")
                     }
                 }
             )
@@ -137,8 +130,7 @@ fun HomeScreen(
                 NavigationBar(
                     containerColor = colors.tertiary,
                     contentColor = colors.onTertiary,
-
-                    modifier = Modifier
+                    modifier = Modifier.height(64.dp)
                         .background(colors.tertiary) // The color of the navigation bar
                         .fillMaxWidth() // Make it fill the width
                 ) {
@@ -155,7 +147,7 @@ fun HomeScreen(
                         ),
                         selected = true,
                         onClick = { /* Handle home click */ },
-                        icon = { Icon(Icons.Default.Home, contentDescription = null) }
+                        icon = { Image(painter = painterResource(R.drawable.notebook_fill), contentDescription = null) }
                     )
                     NavigationBarItem(colors = NavigationBarItemColors(
                         selectedIconColor = colors.accent,
@@ -170,7 +162,8 @@ fun HomeScreen(
                         selected = false,
                         onClick = { /* Handle search click */ },
 
-                        icon = { Icon(Icons.Default.Search, contentDescription = null) }
+                        icon = { Image(painter = painterResource(R.drawable.file_dock), contentDescription = null) }
+
                     )
                     NavigationBarItem(
                         colors = NavigationBarItemColors(
@@ -185,7 +178,8 @@ fun HomeScreen(
                         selected = false,
                         onClick = { /* Handle profile click */ },
 
-                        icon = { Icon(Icons.Default.Person, contentDescription = null) }
+                        icon = { Image(painter = painterResource(R.drawable.paper), contentDescription = null) }
+
                     )
                     NavigationBarItem(
                         colors = NavigationBarItemColors(
@@ -200,7 +194,8 @@ fun HomeScreen(
                         selected = false,
                         onClick = { /* Handle profile click */ },
 
-                        icon = { Icon(Icons.Default.Person, contentDescription = null) }
+                        icon = { Image(painter = painterResource(R.drawable.check_ring), contentDescription = null) }
+
                     )
                 }
             }
@@ -218,7 +213,7 @@ fun HomeScreen(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Create New Note",
 
-                )
+                    )
 
             }
 
@@ -232,13 +227,14 @@ fun HomeScreen(
             onNoteClick = navigateToDetailScreen,
             modifier = modifier,
             viewModelHome = viewModelHome,
+            innerPadding = innerPadding
         )
 
     }
 
 }
 
-val ALL_TAG = Tag(tagId = 420373, tagName = "All")
+val ALL_TAG = Tag(tagId = 420373, tagName = "all")
 
 @Composable
 fun HomeBody(
@@ -247,6 +243,7 @@ fun HomeBody(
     onNoteClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModelHome: HomeViewModel,
+    innerPadding : PaddingValues
 ) {
     var selectedTag by remember {
         mutableStateOf(ALL_TAG)
@@ -267,11 +264,13 @@ fun HomeBody(
         ) {
             items(items = newTagsList, key = { it.tagId }) { tag ->
                 Box(
-                    modifier = Modifier.clip(RoundedCornerShape(16.dp)).clickable(
-                       onClick = {
-                           selectedTag = tag
-                       }
-                    )
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable(
+                            onClick = {
+                                selectedTag = tag
+                            }
+                        )
                         .background(
                             color =
                             if (selectedTag == tag) {
@@ -282,7 +281,12 @@ fun HomeBody(
                         )
 
                 ) {
-                    Text(text = "#" + tag.tagName,modifier = modifier.padding(horizontal = 12.dp, vertical = 4.dp), color = colors.onPrimary)
+                    Text(
+                        text = "#" + tag.tagName,
+                        modifier = modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        color = colors.onPrimary,
+                        fontFamily = ibmPlexMono
+                    )
                 }
 
             }
@@ -320,8 +324,8 @@ fun HomeBody(
                     }
                 }
             }
-        }
 
+        }
     }
 
 }

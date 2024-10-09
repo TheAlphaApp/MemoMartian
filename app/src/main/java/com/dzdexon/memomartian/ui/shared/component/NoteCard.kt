@@ -10,12 +10,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.ui.theme.LocalCustomColors
+import com.dzdexon.memomartian.ui.theme.ibmPlexMono
 import com.dzdexon.memomartian.utils.HelperFunctions
 
 @Composable
@@ -53,13 +53,11 @@ fun NoteCard(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyLarge
             )
-
             tagsList.forEach {
-                Text(text = "#${it.tagName}")
+                Text(text = "#${it.tagName}", fontFamily = ibmPlexMono)
             }
             Text(
                 text = HelperFunctions.formatOffsetDateTime(note.lastUpdate) ?: "",
-
                 style = MaterialTheme.typography.bodySmall
             )
         }
