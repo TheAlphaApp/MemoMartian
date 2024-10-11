@@ -11,6 +11,8 @@ import com.dzdexon.memomartian.repository.NotesRepository
 import com.dzdexon.memomartian.ui.screens.home.ALL_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
@@ -35,6 +37,7 @@ class EditScreenViewModel @Inject constructor(
     private val _uiState =
         mutableStateOf(EditScreenData(isLoading = true))
     val uiState: State<EditScreenData> = _uiState
+    private var saveJob: Job? = null
 
     private fun getLatestData() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -69,35 +72,6 @@ class EditScreenViewModel @Inject constructor(
         getLatestData()
     }
 
-    fun saveNote() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _saveNote()
-        }
-    }
-
-    private suspend fun _saveNote() {
-        val updatedNote = _uiState.value.note.copy(lastUpdate = OffsetDateTime.now())
-        _uiState.value = _uiState.value.copy(
-            note = updatedNote,
-            isLoading = true
-        )
-        notesRepository.updateNote(_uiState.value.note)
-        _uiState.value = _uiState.value.copy(isLoading = false)
-    }
-
-    //    fun updateUiState(noteWithTagsModel: NoteWithTagsModel) {
-//        this.noteWithTagsModel = noteWithTagsModel
-//        saveNoteJob?.cancel()
-//
-//        // Launch a new coroutine with a delay for debouncing
-//        saveNoteJob = viewModelScope.launch {
-//            delay(500) // Wait for 500ms
-//            notesRepository.updateNote(noteWithTagsModel.note, noteWithTagsModel.tags.map { it.tagId }) // Save note after the user stops typing
-//        }
-//    }
-//    fun updateUiState(noteWithTagsModel: NoteWithTagsModel) {
-//        this.noteWithTagsModel = noteWithTagsModel
-//    }
 
     enum class UpdateIt {
         TITLE,
@@ -111,61 +85,45 @@ class EditScreenViewModel @Inject constructor(
         image: String? = null,
         updateIt: UpdateIt,
     ) {
-        when (updateIt) {
-            UpdateIt.TITLE -> {
-                title?.let {
-                    _uiState.value = _uiState.value.copy(
-                        note = _uiState.value.note.copy(title = title)
-                    )
-                }
+        val newNote = when (updateIt) {
+            UpdateIt.TITLE -> title?.let { _uiState.value.note.copy(title = it) }
+            UpdateIt.CONTENT -> content?.let { _uiState.value.note.copy(content = it) }
+            UpdateIt.IMAGE -> image?.let { _uiState.value.note.copy(imageUri = it) }
+        }
 
-            }
+        newNote?.let { note ->
+            _uiState.value = _uiState.value.copy(note = note)
+            saveNoteWithDelay(1000)
+        }
+    }
 
-            UpdateIt.CONTENT -> {
-
-                content?.let {
-                    _uiState.value = _uiState.value.copy(
-                        note = _uiState.value.note.copy(content = content)
-                    )
-                }
-            }
-
-            UpdateIt.IMAGE -> {
-                image?.let {
-                    _uiState.value = _uiState.value.copy(
-                        note = _uiState.value.note.copy(imageUri = image)
-                    )
-                }
-            }
+    private fun saveNoteWithDelay(timeInMillis: Long) {
+        saveJob?.cancel()
+        saveJob = viewModelScope.launch {
+            delay(timeInMillis) // Delay for 1 second (adjust as needed)
+            _uiState.value = _uiState.value.copy(
+                note = _uiState.value.note.copy(lastUpdate = OffsetDateTime.now())
+            )
+            notesRepository.updateNote(_uiState.value.note)
         }
     }
 
     fun updateTagInNote(tag: Tag, remove: Boolean = false) {
-        viewModelScope.launch {
-            _updateTagInNote(tag, remove)
+        viewModelScope.launch(Dispatchers.IO) {
+            if (remove) {
+                notesRepository.removeTagFromNote(_uiState.value.note.noteId, tag.tagId)
+            } else {
+                notesRepository.addTagInNote(_uiState.value.note.noteId, tag.tagId)
+            }
+            getLatestData()
         }
     }
 
-    private suspend fun _updateTagInNote(tag: Tag, remove: Boolean = false) {
-        // Update the tags based on the `remove` flag
-        if (remove) {
-            notesRepository.removeTagFromNote(_uiState.value.note.noteId, tag.tagId)
-        } else {
-            notesRepository.addTagInNote(_uiState.value.note.noteId, tag.tagId)
-        }
-        _saveNote()
-
-        getLatestData()
-
-    }
-
-    //    fun validateInput(note: Note): Boolean {
-//        return note.title.isNotBlank() && note.content.isNotBlank()
-//    }
-    fun deleteNote() {
+    fun deleteNote(callback: () -> Unit) {
         viewModelScope.launch {
             if (_uiState.value.note.noteId > 0)
                 notesRepository.deleteNote(_uiState.value.note)
+            callback()
         }
     }
 
@@ -211,8 +169,4 @@ class EditScreenViewModel @Inject constructor(
                 getLatestData()
             }
     }
-
-//    companion object {
-//        private const val TIMEOUT_MILLIS = 5_000L
-//    }
 }

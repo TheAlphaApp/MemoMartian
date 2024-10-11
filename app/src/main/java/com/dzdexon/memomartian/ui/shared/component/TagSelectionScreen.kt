@@ -135,100 +135,35 @@ private fun TagSelectionScreen(
                     },
                 )
             }
-            
+
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        if (tagList.none { tag ->
+
+        FlowRow(
+            modifier = Modifier.padding(8.dp),
+        ) {
+            tagList.filter { tag ->
                 !selectedTagIDs.contains(tag.tagId)
-            })
-            FlowRow(
-                modifier = Modifier.padding(8.dp),
-            ) {
-                tagList.filter { tag ->
-                    !selectedTagIDs.contains(tag.tagId)
-                }.forEach { tag ->
-                    FilterChip(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp),
-                        label = {
-                            Text(text = "#${tag.tagName}")
-                        },
-                        selected = selectedTagIDs.contains(tag.tagId),
-                        onClick = {
+            }.forEach { tag ->
+                FilterChip(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp),
+                    label = {
+                        Text(text = "#${tag.tagName}")
+                    },
+                    selected = selectedTagIDs.contains(tag.tagId),
+                    onClick = {
 //                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
 //                            showTagUpdateDialog = true
 //                            updatingTag = tag
-                            if (selectedTagIDs.contains(tag.tagId)) {
-                                removeTagFromNote(tag)
-                            } else {
-                                addTagToNote(tag)
-                            }
-                        },
-                    )
-                }
+                        if (selectedTagIDs.contains(tag.tagId)) {
+                            removeTagFromNote(tag)
+                        } else {
+                            addTagToNote(tag)
+                        }
+                    },
+                )
             }
+        }
     }
 }
-//
-//@Composable
-//fun TagUpdateDialog(
-//    onDismiss: () -> Unit,
-//    tag: Tag,
-//) {
-//    var newTagString by remember {
-//        mutableStateOf(tag.tagName)
-//    }
-//    val coroutineScope = rememberCoroutineScope()
-//
-//    CustomDialog(
-//        onDismissRequest = onDismiss,
-//        primaryButtonEnabled = false,
-//        onPrimaryButtonClick = {},
-//        secondaryButtonText = "Cancel",
-//        onSecondaryButtonClick = onDismiss
-//    ) {
-//        Column {
-//            TextField(
-//                value = newTagString,
-//                onValueChange = {
-//                    newTagString = it
-//                },
-//                placeholder = {
-//                    Text(text = "Tag Name")
-//                },
-//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-//                modifier = Modifier.fillMaxWidth(),
-//                singleLine = true,
-//                colors = TextFieldDefaults.colors(
-//                    focusedContainerColor = Color.Transparent,
-//                    unfocusedContainerColor = Color.Transparent,
-//                    disabledContainerColor = Color.Transparent,
-//                    focusedIndicatorColor = Color.Transparent,
-//                    unfocusedIndicatorColor = Color.Transparent,
-//                )
-//            )
-//            ElevatedButton(
-//                onClick = {
-//                    coroutineScope.launch {
-//                        viewModel.updateTag(tag, newTagString)
-//                    }.invokeOnCompletion {
-//                        onDismiss()
-//                    }
-//
-//                }
-//            ) {
-//                Text(text = "Update")
-//            }
-//            ElevatedButton(
-//                onClick = { /*TODO*/
-//                    onDismiss()
-//                },
-//                colors = ButtonDefaults.elevatedButtonColors(
-//                    containerColor = Color.Red
-//                )
-//            ) {
-//                Text(text = "Delete")
-//            }
-//        }
-//    }
-//}

@@ -1,4 +1,4 @@
-package com.dzdexon.memomartian.ui.shared.component
+package com.dzdexon.memomartian.ui.screens.edit
 
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -31,10 +31,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,7 +57,8 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
-import com.dzdexon.memomartian.ui.screens.edit.EditScreenViewModel
+import com.dzdexon.memomartian.ui.shared.component.CustomDialog
+import com.dzdexon.memomartian.ui.shared.component.TagManageBottomSheet
 import com.dzdexon.memomartian.utils.UriPermissionHandler
 import kotlin.math.absoluteValue
 
@@ -70,14 +73,13 @@ fun NoteInputForm(
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
     createNewTag: (String) -> Unit,
-) {    var showTagDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
+) {
+    Log.d("NEMO: NoteInputForm", "NoteInputForm State Rebuild")
     val context = LocalContext.current
 // In this example, the app lets the user select up to 5 media files.
     val pickMultipleMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
-                Log.d("NEMO:MEDIA", "Picked uris : $uris")
+            Log.d("NEMO:MEDIA", "Picked uris : $uris")
             if (uris.isNotEmpty()) {
                 uris.forEach { uri ->
                     UriPermissionHandler.getUriPermission(context, uri)
@@ -99,14 +101,19 @@ fun NoteInputForm(
                 } else {
                     imageString
                 }
-                viewModelEdit.updateUI(image = newString, updateIt = EditScreenViewModel.UpdateIt.IMAGE)
+                viewModelEdit.updateUI(
+                    image = newString,
+                    updateIt = EditScreenViewModel.UpdateIt.IMAGE
+                )
                 Log.d("Note UI Image ", note.imageUri.toString())
 
             }
         }
 
-    var showSheet by remember { mutableStateOf(false) }
-
+    var showSheet by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(showSheet) {
+        Log.d("NEMO: showSheet Variable :", "$showSheet")
+    }
     if (showSheet) {
         TagManageBottomSheet(
             addTagToNote = addTagToNote,
@@ -118,14 +125,19 @@ fun NoteInputForm(
             showSheet = false
         }
     }
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
+    Surface(
+        color = MaterialTheme.colorScheme.background
     ) {
-        if (!note.imageUri.isNullOrEmpty()) {
-            val imageList = note.imageUri.split(",").toTypedArray()
-            BuildImageSlider(imageList.toList())
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+
+        ) {
+            if (!note.imageUri.isNullOrEmpty()) {
+                val imageList = note.imageUri.split(",").toTypedArray()
+                BuildImageSlider(imageList.toList())
 //            imageList.forEach { imageStr ->
 //                Image(
 //                    painter = rememberAsyncImagePainter(
@@ -142,116 +154,89 @@ fun NoteInputForm(
 //                )
 //            }
 
-        }
-
-        TextField(
-            value = note.title,
-            onValueChange = { viewModelEdit.updateUI(title = it, updateIt = EditScreenViewModel.UpdateIt.TITLE) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            placeholder = { Text("Title", style = MaterialTheme.typography.titleLarge) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            textStyle = MaterialTheme.typography.titleLarge
-        )
-        TextField(
-            value = note.content,
-            onValueChange = { viewModelEdit.updateUI(content = it, updateIt = EditScreenViewModel.UpdateIt.CONTENT)  },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            placeholder = { Text("Content", style = MaterialTheme.typography.bodyLarge) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = false,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            textStyle = MaterialTheme.typography.bodyLarge
-
-        )
-        TagView(
-            selectedTags.map { it.tagName }.toList()
-        )
-        ElevatedButton(
-            onClick = {
-                showSheet = true
-            }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = "#Hashtags")
             }
-        }
-        ElevatedButton(
-            onClick = {
-                pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Add Image")
-            }
-        }
 
-         Button(
-            onClick = onSaveClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Save Note")
-        }
-        if (showTagDialog) {
-            CustomDialog(
-                onDismissRequest = {
-                    showTagDialog = !showTagDialog
+            TextField(
+                value = note.title,
+                onValueChange = {
+                    viewModelEdit.updateUI(
+                        title = it,
+                        updateIt = EditScreenViewModel.UpdateIt.TITLE
+                    )
                 },
-                primaryButtonText = "OK",
-                primaryButtonEnabled = true,
-                onPrimaryButtonClick = {
-                    showTagDialog = !showTagDialog
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                placeholder = { Text("Title", style = MaterialTheme.typography.titleLarge) },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
+                textStyle = MaterialTheme.typography.titleLarge
+            )
+            TextField(
+                value = note.content,
+                onValueChange = {
+                    viewModelEdit.updateUI(
+                        content = it,
+                        updateIt = EditScreenViewModel.UpdateIt.CONTENT
+                    )
                 },
-                secondaryButtonText = "Cancel",
-                onSecondaryButtonClick = {
-                    showTagDialog = !showTagDialog
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                placeholder = { Text("Content", style = MaterialTheme.typography.bodyLarge) },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = false,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
+                textStyle = MaterialTheme.typography.bodyLarge
 
-                }
-            ) {
-
-                LazyVerticalStaggeredGrid(
-                    columns = StaggeredGridCells.Adaptive(100.dp)
+            )
+            TagView(
+                selectedTags.map { it.tagName }.toList()
+            )
+            ElevatedButton(
+                onClick = {
+                    showSheet = true
+                }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    items(items = tagList, key = { it.tagId }) { tag ->
-                        FilterChip(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            label = {
-                                Text(text = tag.tagName)
-                            },
-                            selected = selectedTags.contains(tag),
-                            onClick = {
-                                if (selectedTags.map { it.tagId }.contains(tag.tagId)) {
-                                    removeTagFromNote(tag)
-                                } else {
-                                    addTagToNote(tag)
-                                }
-                            }
-                        )
-                    }
-
-
+                    Text(text = "#Hashtags")
                 }
             }
+            ElevatedButton(
+                onClick = {
+                    pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Add Image")
+                }
+            }
+
+            Button(
+                onClick = onSaveClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Save Note")
+            }
+
+
         }
     }
 }
+
 
 @Composable
 fun TagView(tagsList: List<String>) {

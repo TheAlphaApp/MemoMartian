@@ -1,6 +1,6 @@
 package com.dzdexon.memomartian.ui.screens.edit
 
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dzdexon.memomartian.navigation.NavigationDestination
-import com.dzdexon.memomartian.ui.shared.component.EditNoteBody
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 
 object EditScreenDestination : NavigationDestination {
@@ -38,27 +37,27 @@ fun EditScreen(
     navigateUp: () -> Unit,
     viewModelEdit: EditScreenViewModel = hiltViewModel<EditScreenViewModel>()
 ) {
+    Log.d("NEMO: EDITSCREEN", "REBUILD EDIT Screen")
     val uiState by viewModelEdit.uiState
-    val context = LocalContext.current
     Scaffold(
         topBar = {
             NoteTopAppBar(
                 canNavigateBack = canNavigateBack,
                 navigateUp = {
-                    viewModelEdit.saveNote()
                     navigateUp()
                 },
                 title = "Edit Your Note",
                 modifier = Modifier.background(color = Color.Red),
                 actions = {
                     IconButton(onClick = {
-                        viewModelEdit.deleteNote().also {
-                            Toast.makeText(
-                                context, "Note Deleted Permanently",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        navigateToHome()
+                        viewModelEdit.deleteNote(navigateToHome)
+//                            .also {
+//                            Toast.makeText(
+//                                context, "Note Deleted Permanently",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//                        }
+//                        navigateToHome()
                     }) {
                         Icon(Icons.Filled.DeleteForever, contentDescription = "Delete Icon")
 
@@ -82,15 +81,13 @@ fun EditScreen(
 //                Toast.makeText(context, "Note not found", Toast.LENGTH_LONG).show()
 //            }
 
-            EditNoteBody(
+            NoteInputForm(
                 selectedTags = uiState.selectedTags,
                 note = uiState.note,
                 viewModelEdit = viewModelEdit,
                 onSaveClick = {
-                    viewModelEdit.saveNote()
                     navigateBack()
                 },
-                allTags = uiState.allTags,
                 addTagToNote = { tag ->
                     viewModelEdit.updateTagInNote(tag)
                 },
@@ -99,6 +96,7 @@ fun EditScreen(
                 },
                 createNewTag = viewModelEdit::createNewTag,
                 modifier = modifier.padding(innerPadding),
+                tagList = uiState.allTags,
             )
         }
     }
