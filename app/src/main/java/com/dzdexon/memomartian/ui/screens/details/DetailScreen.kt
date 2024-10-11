@@ -22,10 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.dzdexon.memomartian.AppViewModelProvider
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
@@ -44,7 +43,7 @@ fun DetailScreen(
     navigateToEditScreen: (Long) -> Unit,
     navigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
-    viewModelDetail: DetailScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModelDetail: DetailScreenViewModel = hiltViewModel<DetailScreenViewModel>(),
 ) {
     val noteWithTagsModel by viewModelDetail.uiState.collectAsState()
     val note : Note? = noteWithTagsModel?.note

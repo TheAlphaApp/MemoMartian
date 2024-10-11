@@ -17,8 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.dzdexon.memomartian.AppViewModelProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.EditNoteBody
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
@@ -37,7 +36,7 @@ fun EditScreen(
     navigateToHome: () -> Unit,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
-    viewModelEdit: EditScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModelEdit: EditScreenViewModel = hiltViewModel<EditScreenViewModel>()
 ) {
     val uiState by viewModelEdit.uiState
     val context = LocalContext.current

@@ -53,10 +53,10 @@ import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
-import com.dzdexon.memomartian.NotesApplication
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.ui.screens.edit.EditScreenViewModel
+import com.dzdexon.memomartian.utils.UriPermissionHandler
 import kotlin.math.absoluteValue
 
 @Composable
@@ -70,19 +70,17 @@ fun NoteInputForm(
     addTagToNote: (Tag) -> Unit,
     removeTagFromNote: (Tag) -> Unit,
     createNewTag: (String) -> Unit,
-) {
-    var showTagDialog by rememberSaveable {
+) {    var showTagDialog by rememberSaveable {
         mutableStateOf(false)
     }
-
-
+    val context = LocalContext.current
 // In this example, the app lets the user select up to 5 media files.
     val pickMultipleMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
-
+                Log.d("NEMO:MEDIA", "Picked uris : $uris")
             if (uris.isNotEmpty()) {
                 uris.forEach { uri ->
-                    NotesApplication.getUriPermission(uri)
+                    UriPermissionHandler.getUriPermission(context, uri)
                 }
                 var imageString: String? = null
                 uris.forEach { str ->
@@ -92,7 +90,7 @@ fun NoteInputForm(
                         str.toString()
                     }
 
-                    Log.d("Image URI", imageString.toString())
+                    Log.d("NEMO:Image URI", imageString.toString())
 
                 }
                 val oldString = note.imageUri

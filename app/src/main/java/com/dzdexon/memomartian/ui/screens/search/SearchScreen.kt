@@ -28,8 +28,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.dzdexon.memomartian.AppViewModelProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.screens.home.SearchBar
 import com.dzdexon.memomartian.utils.HelperFunctions
@@ -42,7 +41,7 @@ object SearchScreenDestination : NavigationDestination {
 
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModel: SearchViewModel = hiltViewModel<SearchViewModel>(),
 //    viewModelTag: TagManageViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToDetailScreen: (Long) -> Unit,
     navigateUp: () -> Unit

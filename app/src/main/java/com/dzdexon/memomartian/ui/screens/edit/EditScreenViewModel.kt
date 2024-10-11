@@ -8,10 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.repository.NotesRepository
+import com.dzdexon.memomartian.ui.screens.home.ALL_TAG
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
+import javax.inject.Inject
 
 
 data class EditScreenData(
@@ -22,8 +25,8 @@ data class EditScreenData(
     val error: String? = null,
 )
 
-
-class EditScreenViewModel(
+@HiltViewModel
+class EditScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository,
 ) : ViewModel() {
@@ -32,6 +35,7 @@ class EditScreenViewModel(
     private val _uiState =
         mutableStateOf(EditScreenData(isLoading = true))
     val uiState: State<EditScreenData> = _uiState
+
     private fun getLatestData() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -167,27 +171,45 @@ class EditScreenViewModel(
 
 
     private fun validateTagString(tagString: String): Boolean {
+
         val isTagExist = _uiState.value.allTags.map {
             it.tagName.trim()
-        }.contains(tagString) || tagString.trim() == "All"
-        return tagString.isNotBlank() && tagString.isNotEmpty() && !isTagExist
+        }.contains(tagString) || tagString == ALL_TAG.tagName
+
+        // Check if the tag string is blank
+        if (tagString.isEmpty()) {
+            // Set snackbar message for empty tag string
+
+            return false
+        }
+
+        // Check if the tag already exists
+        if (isTagExist) {
+            // Set snackbar message for existing tag
+
+            return false
+        }
+
+        // If everything is fine, return true
+        return true
     }
 
+
     fun createNewTag(tagString: String) {
-        if (validateTagString(tagString))
+        val cleanedTagString = tagString.trim('#').trim()
+        if (validateTagString(cleanedTagString))
             viewModelScope.launch {
-                val id = notesRepository.createTag(Tag(tagName = tagString.trim()))
+                val id = notesRepository.createTag(Tag(tagName = cleanedTagString))
                 if (id > 0) {
                     updateTagInNote(
                         Tag(
                             tagId = id,
-                            tagName = tagString.trim()
+                            tagName = cleanedTagString
                         )
                     ) // Tag creation successful
                 }
                 getLatestData()
             }
-
     }
 
 //    companion object {

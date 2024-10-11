@@ -6,13 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.repository.NotesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-class DetailScreenViewModel(
+@HiltViewModel
+class DetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    notesRepository: NotesRepository
+    private val notesRepository: NotesRepository
 ) : ViewModel() {
     private val emptyNote = Note(
         noteId = 0,
@@ -34,6 +37,7 @@ class DetailScreenViewModel(
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
             initialValue = null
         )
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }

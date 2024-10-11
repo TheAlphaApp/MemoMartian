@@ -12,8 +12,9 @@ import com.dzdexon.memomartian.model.TagWithNotesModel
 import com.dzdexon.memomartian.model.asEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class OfflineNotesRepository(private val notesDao: NotesDao) : NotesRepository {
+class OfflineNotesRepository @Inject constructor(private val notesDao: NotesDao) : NotesRepository {
     override fun getAllNotesStream(): Flow<List<NoteWithTagsModel>> =
         notesDao.getAllNotes().map {
             it.map { noteWithTags ->

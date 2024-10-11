@@ -1,5 +1,8 @@
 package com.dzdexon.memomartian.utils
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -26,5 +29,15 @@ object HelperFunctions {
         } else {
             return null
         }
+    }
+}
+
+
+object UriPermissionHandler {
+    fun getUriPermission(context: Context, uri: Uri) {
+        context.contentResolver.takePersistableUriPermission(
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
     }
 }

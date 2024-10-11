@@ -1,9 +1,11 @@
 
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.gradlePlugin)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.compose.compiler)
+    id("com.google.dagger.hilt.android")
 }
 composeCompiler {
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
@@ -81,5 +83,8 @@ dependencies {
     debugImplementation(libs.bundles.compose)
     androidTestImplementation(composeBom)
 
-
+    //Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

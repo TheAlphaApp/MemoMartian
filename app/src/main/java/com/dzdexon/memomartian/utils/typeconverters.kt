@@ -7,12 +7,12 @@ import java.time.format.DateTimeFormatter
 object MyTypeConverters {
     @TypeConverter
     fun fromStringToListOfInt(value: String?): List<Int> {
-        if (value?.isNotBlank() == true ) {
-            return value.split(",").map {
+        return if (value?.isNotBlank() == true ) {
+            value.split(",").map {
                 it.toInt()
             }
         } else {
-            return emptyList<Int>()
+            emptyList<Int>()
         }
 
     }

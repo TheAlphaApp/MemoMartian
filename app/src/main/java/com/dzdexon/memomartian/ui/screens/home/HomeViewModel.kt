@@ -7,13 +7,16 @@ import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.model.TagWithNotesModel
 import com.dzdexon.memomartian.repository.NotesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
+import javax.inject.Inject
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val notesRepository: NotesRepository,
 ) : ViewModel() {
     private val dummyNote = Note(

@@ -56,8 +56,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.dzdexon.memomartian.AppViewModelProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.model.TagWithNotesModel
@@ -78,7 +77,7 @@ fun HomeScreen(
     navigateToDetailScreen: (Long) -> Unit,
     navigateToSearchScreen: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModelHome: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModelHome: HomeViewModel = hiltViewModel<HomeViewModel>(),
 ) {
     val listOfNotes by viewModelHome.stateFlowOfListOfNotes.collectAsState()
     val tagList by viewModelHome.stateFlowOfListOfTags.collectAsState()
