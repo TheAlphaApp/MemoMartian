@@ -45,16 +45,16 @@ fun NoteCard(
                 maxLines = 1,
                 color = colors.onPrimary,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleMedium
             )
             Text(
                 text = note.content,
                 maxLines = 6,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyMedium
             )
             tagsList.forEach {
-                Text(text = "#${it.tagName}", fontFamily = ibmPlexMono)
+                Text(text = "#${it.tagName}", fontFamily = ibmPlexMono,  style = MaterialTheme.typography.bodySmall)
             }
             Text(
                 text = HelperFunctions.formatOffsetDateTime(note.lastUpdate) ?: "",

@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -50,9 +51,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
@@ -106,11 +106,19 @@ fun HomeScreen(
                 },
                 actions = {
                     IconButton(onClick = navigateToSearchScreen) {
-                        Image(painter = painterResource(R.drawable.search_white), contentDescription = null)
+                        Icon(
+                            painter = painterResource(R.drawable.search_white),
+                            modifier = modifier.size(24.dp),
+                            contentDescription = null
+                        )
 //                        Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
                     }
                     IconButton(onClick = navigateToSearchScreen) {
-                        Icon(imageVector = Icons.Default.MoreVert, modifier = modifier.size(24.dp), contentDescription = "More Menu")
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            modifier = modifier.size(24.dp),
+                            contentDescription = "More Menu"
+                        )
                     }
                 }
             )
@@ -130,7 +138,8 @@ fun HomeScreen(
                 NavigationBar(
                     containerColor = colors.tertiary,
                     contentColor = colors.onTertiary,
-                    modifier = Modifier.height(64.dp)
+                    modifier = Modifier
+                        .height(64.dp)
                         .background(colors.tertiary) // The color of the navigation bar
                         .fillMaxWidth() // Make it fill the width
                 ) {
@@ -147,22 +156,35 @@ fun HomeScreen(
                         ),
                         selected = true,
                         onClick = { /* Handle home click */ },
-                        icon = { Image(painter = painterResource(R.drawable.notebook_fill), contentDescription = null) }
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.notes),
+                                tint = colors.onSecondary,
+                                contentDescription = null
+                            )
+                        }
                     )
-                    NavigationBarItem(colors = NavigationBarItemColors(
-                        selectedIconColor = colors.accent,
-                        selectedTextColor = colors.accent,
-                        selectedIndicatorColor = colors.onPrimary,
-                        unselectedIconColor = colors.onTertiary,
-                        unselectedTextColor = colors.onTertiary,
-                        disabledIconColor = colors.onTertiary,
-                        disabledTextColor = colors.onTertiary
-                    ),
-
+                    NavigationBarItem(
+                        colors = NavigationBarItemColors(
+                            selectedIconColor = colors.accent,
+                            selectedTextColor = colors.accent,
+                            selectedIndicatorColor = colors.onPrimary,
+                            unselectedIconColor = colors.onTertiary,
+                            unselectedTextColor = colors.onTertiary,
+                            disabledIconColor = colors.onTertiary,
+                            disabledTextColor = colors.onTertiary
+                        ),
                         selected = false,
-                        onClick = { /* Handle search click */ },
+                        onClick = { /* Handle profile click */ },
 
-                        icon = { Image(painter = painterResource(R.drawable.file_dock), contentDescription = null) }
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.check_ring),
+                                tint = colors.onSecondary,
+
+                                contentDescription = null
+                            )
+                        }
 
                     )
                     NavigationBarItem(
@@ -178,25 +200,16 @@ fun HomeScreen(
                         selected = false,
                         onClick = { /* Handle profile click */ },
 
-                        icon = { Image(painter = painterResource(R.drawable.paper), contentDescription = null) }
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.list_alt),
+                                tint = colors.onSecondary,
+                                contentDescription = null
+                            )
+                        }
 
                     )
-                    NavigationBarItem(
-                        colors = NavigationBarItemColors(
-                            selectedIconColor = colors.accent,
-                            selectedTextColor = colors.accent,
-                            selectedIndicatorColor = colors.onPrimary,
-                            unselectedIconColor = colors.onTertiary,
-                            unselectedTextColor = colors.onTertiary,
-                            disabledIconColor = colors.onTertiary,
-                            disabledTextColor = colors.onTertiary
-                        ),
-                        selected = false,
-                        onClick = { /* Handle profile click */ },
 
-                        icon = { Image(painter = painterResource(R.drawable.check_ring), contentDescription = null) }
-
-                    )
                 }
             }
         },
@@ -207,7 +220,8 @@ fun HomeScreen(
                 onClick = {
                     viewModelHome.createNewNote(navigateToEditNote)
                 },
-                modifier = Modifier.navigationBarsPadding()
+                modifier = Modifier.navigationBarsPadding(),
+                shape = CircleShape
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -243,7 +257,7 @@ fun HomeBody(
     onNoteClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModelHome: HomeViewModel,
-    innerPadding : PaddingValues
+    innerPadding: PaddingValues
 ) {
     var selectedTag by remember {
         mutableStateOf(ALL_TAG)
