@@ -49,13 +49,16 @@ fun MemoMartianTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
+    val colors = LocalCustomColors.current
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             //changes the status bar background color
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.background.toArgb()
-            window.navigationBarColor = colorScheme.background.toArgb()
+            window.statusBarColor = colors.primary.toArgb()
+            window.navigationBarColor = colors.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = darkTheme
             //changes the status bar icon color

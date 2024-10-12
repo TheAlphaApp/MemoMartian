@@ -17,27 +17,8 @@ import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 
 @Composable
 fun NotesApp(navController: NavHostController = rememberNavController()) {
-//    var isDarkTheme by rememberSaveable { mutableStateOf(false) }
-    var isDarkTheme = isSystemInDarkTheme()
-    // Switch between dark and light colors
-    CustomTheme(isDarkTheme = isDarkTheme) {
+
         NotesAppNavHost(navController = navController)
-    }
-}
 
-
-
-@Composable
-fun CustomTheme(
-    isDarkTheme: Boolean = false, // Flag to toggle between themes
-    content: @Composable () -> Unit
-) {
-    // Choose the appropriate colors based on the theme
-    val colors = remember { if (isDarkTheme) DarkColors else LightColors }
-
-    // Provide the CustomColors to the composable hierarchy
-    CompositionLocalProvider(LocalCustomColors provides colors) {
-        content() // Wrap content within the color provider
-    }
 }
 

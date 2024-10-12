@@ -1,5 +1,6 @@
 package com.dzdexon.memomartian.ui.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -43,6 +45,7 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -65,10 +68,34 @@ import com.dzdexon.memomartian.ui.shared.component.NoteCard
 import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 import com.dzdexon.memomartian.R
 import com.dzdexon.memomartian.ui.theme.ibmPlexMono
+import com.dzdexon.memomartian.utils.ALL_TAG
 
 object HomeDestination : NavigationDestination {
     override val route: String = "home"
 }
+
+
+data class NavBarItem(val name: String, val icon: Int, val selectedIcon: Int)
+
+val navBarItems = listOf(
+    NavBarItem(name = "Notes", icon = R.drawable.notepad, selectedIcon = R.drawable.notepad_fill),
+    NavBarItem(
+        name = "Lists",
+        icon = R.drawable.list_bullets,
+        selectedIcon = R.drawable.list_bullets_fill
+    ),
+    NavBarItem(
+        name = "Todos",
+        icon = R.drawable.check_square,
+        selectedIcon = R.drawable.check_square_fill
+    ),
+    NavBarItem(
+        name = "kanban",
+        icon = R.drawable.kanban,
+        selectedIcon = R.drawable.kanban_fill
+    )
+
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +109,7 @@ fun HomeScreen(
     val listOfNotes by viewModelHome.stateFlowOfListOfNotes.collectAsState()
     val tagList by viewModelHome.stateFlowOfListOfTags.collectAsState()
     val colors = LocalCustomColors.current
+    var selectedIndex by remember { mutableIntStateOf(0) }
     Scaffold(
         containerColor = colors.primary,
         topBar = {
@@ -104,7 +132,7 @@ fun HomeScreen(
                 actions = {
                     IconButton(onClick = navigateToSearchScreen) {
                         Icon(
-                            painter = painterResource(R.drawable.search_white),
+                            painter = painterResource(R.drawable.magnifying_glass),
                             modifier = modifier.size(24.dp),
                             contentDescription = null
                         )
@@ -112,7 +140,7 @@ fun HomeScreen(
                     }
                     IconButton(onClick = navigateToSearchScreen) {
                         Icon(
-                            imageVector = Icons.Default.MoreVert,
+                            painter = painterResource(R.drawable.dots_three_outline_vertical),
                             modifier = modifier.size(24.dp),
                             contentDescription = "More Menu"
                         )
@@ -140,72 +168,29 @@ fun HomeScreen(
                         .background(colors.tertiary) // The color of the navigation bar
                         .fillMaxWidth() // Make it fill the width
                 ) {
-                    // Add your navigation items here
-                    NavigationBarItem(
-                        colors = NavigationBarItemColors(
-                            selectedIconColor = colors.onPrimary,
-                            selectedTextColor = colors.onPrimary,
-                            selectedIndicatorColor = Color.Transparent,
-                            unselectedIconColor = colors.onTertiary,
-                            unselectedTextColor = colors.onTertiary,
-                            disabledIconColor = colors.onTertiary,
-                            disabledTextColor = colors.onTertiary
-                        ),
-                        selected = true,
-                        onClick = { /* Handle home click */ },
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.notes),
-                                tint = colors.onSecondary,
-                                contentDescription = null
-                            )
-                        }
-                    )
-                    NavigationBarItem(
-                        colors = NavigationBarItemColors(
-                            selectedIconColor = colors.accent,
-                            selectedTextColor = colors.accent,
-                            selectedIndicatorColor = colors.onPrimary,
-                            unselectedIconColor = colors.onTertiary,
-                            unselectedTextColor = colors.onTertiary,
-                            disabledIconColor = colors.onTertiary,
-                            disabledTextColor = colors.onTertiary
-                        ),
-                        selected = false,
-                        onClick = { /* Handle profile click */ },
+                    navBarItems.forEachIndexed { index, navBarItem ->
+                        NavigationBarItem(
+                            colors = NavigationBarItemColors(
+                                selectedIconColor = colors.onPrimary,
+                                selectedTextColor = colors.onPrimary,
+                                selectedIndicatorColor = Color.Transparent,
+                                unselectedIconColor = colors.onSecondary,
+                                unselectedTextColor = colors.onSecondary,
+                                disabledIconColor = colors.onTertiary,
+                                disabledTextColor = colors.onTertiary
+                            ),
+                            selected = selectedIndex == index,
+                            onClick = { selectedIndex = index },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(if (selectedIndex == index) navBarItem.selectedIcon else navBarItem.icon),
+                                    modifier = modifier.size(32.dp),
+                                    contentDescription = navBarItem.name
+                                )
+                            }
+                        )
+                    }
 
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.check_ring),
-                                tint = colors.onSecondary,
-
-                                contentDescription = null
-                            )
-                        }
-
-                    )
-                    NavigationBarItem(
-                        colors = NavigationBarItemColors(
-                            selectedIconColor = colors.accent,
-                            selectedTextColor = colors.accent,
-                            selectedIndicatorColor = colors.onPrimary,
-                            unselectedIconColor = colors.onTertiary,
-                            unselectedTextColor = colors.onTertiary,
-                            disabledIconColor = colors.onTertiary,
-                            disabledTextColor = colors.onTertiary
-                        ),
-                        selected = false,
-                        onClick = { /* Handle profile click */ },
-
-                        icon = {
-                            Icon(
-                                painter = painterResource(R.drawable.list_alt),
-                                tint = colors.onSecondary,
-                                contentDescription = null
-                            )
-                        }
-
-                    )
 
                 }
             }
@@ -231,6 +216,8 @@ fun HomeScreen(
         },
 
         ) { innerPadding ->
+        Log.d("NEMO: Top Padding", "Top Padding: ${innerPadding.calculateTopPadding()}")
+        Log.d("NEMO: Bottom Padding", "Bottom Padding: ${innerPadding.calculateBottomPadding()}")
 
         HomeBody(
             notesList = listOfNotes,
@@ -245,7 +232,6 @@ fun HomeScreen(
 
 }
 
-val ALL_TAG = Tag(tagId = 420373, tagName = "all")
 
 @Composable
 fun HomeBody(
@@ -260,14 +246,16 @@ fun HomeBody(
         mutableStateOf(ALL_TAG)
     }
 
+
     val filteredItems: TagWithNotesModel? by viewModelHome.stateFlowTagWithNotes(selectedTag.tagId)
         .collectAsState()
     val newTagsList = listOf(ALL_TAG) + tagsList
     val colors = LocalCustomColors.current
     Column(
-        modifier = modifier, verticalArrangement = Arrangement.Top
+        modifier = modifier
+            .padding(top = innerPadding.calculateTopPadding(), bottom = 0.dp)
+            .fillMaxSize()
     ) {
-        Box(Modifier.height(64.dp))
         LazyRow(
             modifier = Modifier.padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -305,37 +293,34 @@ fun HomeBody(
 
         }
         Box(modifier.height(8.dp))
-        if (selectedTag == ALL_TAG) {
-            LazyVerticalStaggeredGrid(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                columns = StaggeredGridCells.Fixed(2),
-            ) {
+
+        LazyVerticalStaggeredGrid(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            columns = StaggeredGridCells.Fixed(2),
+            contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding() + 16.dp)
+        ) {
+
+            if (selectedTag == ALL_TAG) {
                 items(items = notesList, key = { it.note.noteId }) { noteWithTags ->
                     NoteCard(
                         note = noteWithTags.note,
                         tagsList = noteWithTags.tags,
-                        onClick = onNoteClick
+                        onClick = onNoteClick,
+                        modifier = modifier
                     )
                 }
-            }
-
-        } else {
-            LazyVerticalStaggeredGrid(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                columns = StaggeredGridCells.Fixed(2),
-            ) {
+            } else {
                 filteredItems?.let { tagWithNotes ->
                     items(items = tagWithNotes.notes, key = { it.noteId }) { note ->
-
                         NoteCard(
                             note = note, tagsList = notesList.first {
                                 it.note.noteId == note.noteId
-                            }.tags, onClick = onNoteClick
+                            }.tags, onClick = onNoteClick,
+                            modifier = modifier
                         )
                     }
                 }
             }
-
         }
     }
 

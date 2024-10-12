@@ -1,5 +1,7 @@
 package com.dzdexon.memomartian.ui.shared.component
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dzdexon.memomartian.model.Note
@@ -22,9 +25,12 @@ import com.dzdexon.memomartian.utils.HelperFunctions
 fun NoteCard(
     note: Note,
     tagsList: List<Tag>,
-    onClick: (Long) -> Unit
+    onClick: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val colors = LocalCustomColors.current
+
+
     Card(
         colors = CardColors(
             containerColor = colors.secondary,
@@ -32,7 +38,7 @@ fun NoteCard(
             disabledContainerColor = colors.tertiary,
             disabledContentColor = colors.onTertiary
         ),
-        modifier = Modifier
+        modifier = modifier
         .padding(4.dp)
         .fillMaxWidth()
         .clickable {

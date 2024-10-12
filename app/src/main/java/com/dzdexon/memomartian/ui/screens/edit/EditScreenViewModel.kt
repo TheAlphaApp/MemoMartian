@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.repository.NotesRepository
-import com.dzdexon.memomartian.ui.screens.home.ALL_TAG
+import com.dzdexon.memomartian.utils.ALL_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

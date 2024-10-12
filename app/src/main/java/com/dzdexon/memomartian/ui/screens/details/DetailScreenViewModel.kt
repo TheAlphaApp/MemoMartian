@@ -17,13 +17,7 @@ class DetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private val emptyNote = Note(
-        noteId = 0,
-        title = "",
-        content = "",
-        lastUpdate = null,
-        imageUri = null
-    )
+
     private val noteId: Long = checkNotNull(savedStateHandle[DetailScreenDestination.noteIdArgs])
 
     /**
