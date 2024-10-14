@@ -16,13 +16,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.dzdexon.memomartian.ui.screens.details.DetailScreen
-import com.dzdexon.memomartian.ui.screens.details.DetailScreenDestination
 import com.dzdexon.memomartian.ui.screens.edit.EditScreen
-import com.dzdexon.memomartian.ui.screens.edit.EditScreenDestination
-import com.dzdexon.memomartian.ui.screens.home.HomeDestination
 import com.dzdexon.memomartian.ui.screens.home.HomeScreen
 import com.dzdexon.memomartian.ui.screens.search.SearchScreen
-import com.dzdexon.memomartian.ui.screens.search.SearchScreenDestination
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
@@ -39,41 +35,40 @@ fun NotesAppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = HomeDestination.route,
+        startDestination = NemoRoutes.HomeScreen.route,
         modifier = modifier
     ) {
         customComposable(
-            route = HomeDestination.route,
+            route = NemoRoutes.HomeScreen.route,
         ) {
             Log.d("NAV", "Navigate to HomeScreen")
             HomeScreen(
                 navigateToEditNote = {
-                    navController.navigate("${EditScreenDestination.route}/${it}")
+                    navController.navigate(NemoRoutes.EditScreen.withNoteId(it.toString()))
                 },
                 navigateToDetailScreen = {
-                    navController.navigate("${DetailScreenDestination.route}/${it}")
+                    navController.navigate(NemoRoutes.DetailScreen.withNoteId(it.toString()))
                 },
                 navigateToSearchScreen = {
-                    navController.navigate(SearchScreenDestination.route)
+                    navController.navigate(NemoRoutes.SearchScreen.route)
                 },
             )
         }
         customComposable(
-            route = EditScreenDestination.routeWithArgs,
-            arguments = listOf(navArgument(EditScreenDestination.noteIdArgs) {
+            route = NemoRoutes.EditScreen.route,
+            arguments = listOf(navArgument(NOTE_ID_KEY) {
                 type = NavType.LongType
             }),
         ) {
-            Log.d("NAV", "Navigate to EditScreen")
+            Log.d("NEMO: NAV", "Navigate to EditScreen")
 
             EditScreen(
                 navigateToHome = {
-                    navController.navigate(HomeDestination.route) {
-                        popUpTo(HomeDestination.route) {
+                    navController.navigate(NemoRoutes.HomeScreen.route) {
+                        popUpTo(NemoRoutes.HomeScreen.route) {
                             inclusive = true
                         }
                     }
-
                 },
                 navigateUp = {
                     navController.navigateUp()
@@ -81,8 +76,8 @@ fun NotesAppNavHost(
             )
         }
         customComposable(
-            route = DetailScreenDestination.routeWithArgs,
-            arguments = listOf(navArgument(DetailScreenDestination.noteIdArgs) {
+            route = NemoRoutes.DetailScreen.route,
+            arguments = listOf(navArgument(NOTE_ID_KEY) {
                 type = NavType.IntType
             }),
         ) {
@@ -90,7 +85,7 @@ fun NotesAppNavHost(
 
             DetailScreen(
                 navigateToEditScreen = {
-                    navController.navigate("${EditScreenDestination.route}/${it}")
+                    navController.navigate(NemoRoutes.EditScreen.withNoteId(it.toString()))
                 },
                 navigateUp = {
                     navController.navigateUp()
@@ -98,7 +93,7 @@ fun NotesAppNavHost(
             )
         }
         slideInComposable(
-            route = SearchScreenDestination.route,
+            route = NemoRoutes.SearchScreen.route,
         ) {
             Log.d("NAV", "Navigate to SearchScreen")
 
@@ -107,7 +102,7 @@ fun NotesAppNavHost(
                     navController.navigateUp()
                 },
                 navigateToDetailScreen = {
-                    navController.navigate("${DetailScreenDestination.route}/${it}")
+                    navController.navigate(NemoRoutes.DetailScreen.withNoteId(it.toString()))
                 },
             )
         }

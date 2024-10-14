@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
+import com.dzdexon.memomartian.navigation.NOTE_ID_KEY
 import com.dzdexon.memomartian.repository.NotesRepository
 import com.dzdexon.memomartian.utils.ALL_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +34,7 @@ class EditScreenViewModel @Inject constructor(
     private val notesRepository: NotesRepository,
 ) : ViewModel() {
 
-    private val noteId: Long = checkNotNull(savedStateHandle[EditScreenDestination.noteIdArgs])
+    private val noteId: Long = checkNotNull(savedStateHandle[NOTE_ID_KEY])
 
     private val _uiState =
         mutableStateOf(EditScreenData(isLoading = true))

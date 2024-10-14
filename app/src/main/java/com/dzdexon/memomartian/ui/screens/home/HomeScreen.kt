@@ -48,17 +48,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.model.Tag
 import com.dzdexon.memomartian.model.TagWithNotesModel
-import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NoteCard
 import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 import com.dzdexon.memomartian.R
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import com.dzdexon.memomartian.ui.theme.ibmPlexMono
 import com.dzdexon.memomartian.utils.ALL_TAG
-
-object HomeDestination : NavigationDestination {
-    override val route: String = "home"
-}
 
 
 data class NavBarItem(val name: String, val icon: Int, val selectedIcon: Int)

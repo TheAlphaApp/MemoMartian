@@ -18,15 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 
-object EditScreenDestination : NavigationDestination {
-    override val route: String = "edit_screen"
-    const val noteIdArgs = "noteId"
-    val routeWithArgs = "$route/{$noteIdArgs}"
-}
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)

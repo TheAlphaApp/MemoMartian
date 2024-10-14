@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.gradlePlugin)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.compose.compiler)
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt.android)
+//    alias(libs.plugins.kotlin.serialization)
 }
 composeCompiler {
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
@@ -13,12 +14,12 @@ composeCompiler {
 }
 android {
     namespace = "com.dzdexon.memomartian"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.dzdexon.memomartian"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35 //TODO: Check targetSdk 35 changes
         versionCode = 3
         versionName = "0.0.3"
 
@@ -87,4 +88,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    //kotlin-x serialization
+//    implementation(libs.kotlinx.serialization.json)
 }

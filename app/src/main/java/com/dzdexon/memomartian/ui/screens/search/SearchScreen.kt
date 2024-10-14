@@ -31,15 +31,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dzdexon.memomartian.R
-import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NemoMinimalTextField
 import com.dzdexon.memomartian.ui.shared.component.NoteCard
 import com.dzdexon.memomartian.ui.theme.LocalCustomColors
-
-
-object SearchScreenDestination : NavigationDestination {
-    override val route: String = "search_screen"
-}
 
 
 @Composable

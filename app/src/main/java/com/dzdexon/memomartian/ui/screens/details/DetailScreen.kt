@@ -26,15 +26,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.dzdexon.memomartian.model.Note
-import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
-import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 
-object DetailScreenDestination : NavigationDestination {
-    override val route: String = "detail_screen"
-    const val noteIdArgs = "noteId"
-    val routeWithArgs = "$route/{$noteIdArgs}"
-}
 
 
 @OptIn(ExperimentalMaterial3Api::class)

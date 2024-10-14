@@ -44,24 +44,6 @@ class HomeViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
             initialValue = null
         )
-//        if (tagId == ALL_TAG.tagId)
-//            return notesRepository.getAllNotesStream().stateIn(scope = viewModelScope,
-//                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-//                initialValue = null).map { it ->
-//                it.map { ss ->
-//                    TagWithNotesModel(
-//                        notes = ss.note,
-//                        tag = ALL_TAG
-//                    )
-//                }
-//            }
-//        return notesRepository
-//            .getTagWithNotes(tagId)
-//            .stateIn(
-//                scope = viewModelScope,
-//                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-//                initialValue = null
-//            )
     }
 
     val stateFlowOfListOfTags: StateFlow<List<Tag>> = notesRepository
