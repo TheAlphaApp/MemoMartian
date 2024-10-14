@@ -32,6 +32,7 @@ class EditScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository,
 ) : ViewModel() {
+
     private val noteId: Long = checkNotNull(savedStateHandle[EditScreenDestination.noteIdArgs])
 
     private val _uiState =

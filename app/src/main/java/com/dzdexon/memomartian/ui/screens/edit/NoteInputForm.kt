@@ -4,63 +4,62 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.carousel.CarouselDefaults
+import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.size.Scale
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
-import com.dzdexon.memomartian.ui.shared.component.CustomDialog
+import com.dzdexon.memomartian.R
+import com.dzdexon.memomartian.ui.shared.component.NemoButton
+
 import com.dzdexon.memomartian.ui.shared.component.TagManageBottomSheet
+import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 import com.dzdexon.memomartian.utils.UriPermissionHandler
-import kotlin.math.absoluteValue
 
 @Composable
 fun NoteInputForm(
@@ -76,6 +75,7 @@ fun NoteInputForm(
 ) {
     Log.d("NEMO: NoteInputForm", "NoteInputForm State Rebuild")
     val context = LocalContext.current
+    val colors = LocalCustomColors.current
 // In this example, the app lets the user select up to 5 media files.
     val pickMultipleMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
@@ -126,113 +126,88 @@ fun NoteInputForm(
         }
     }
     Surface(
-        color = MaterialTheme.colorScheme.background
+        modifier = modifier,
+        color = colors.primary,
+        contentColor = colors.onPrimary
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-
-        ) {
-            if (!note.imageUri.isNullOrEmpty()) {
-                val imageList = note.imageUri.split(",").toTypedArray()
-                BuildImageSlider(imageList.toList())
-//            imageList.forEach { imageStr ->
-//                Image(
-//                    painter = rememberAsyncImagePainter(
-//                        ImageRequest
-//                            .Builder(LocalContext.current)
-//                            .data(data = Uri.parse(imageStr))
-//                            .build()
-//                    ),
-//                    contentDescription = null,
-//                    modifier = Modifier
-//                        .size(300.dp)
-//                        .padding(6.dp),
-//                    contentScale = ContentScale.Crop
-//                )
-//            }
-
-            }
-
-            TextField(
-                value = note.title,
-                onValueChange = {
-                    viewModelEdit.updateUI(
-                        title = it,
-                        updateIt = EditScreenViewModel.UpdateIt.TITLE
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                placeholder = { Text("Title", style = MaterialTheme.typography.titleLarge) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                textStyle = MaterialTheme.typography.titleLarge
-            )
-            TextField(
-                value = note.content,
-                onValueChange = {
-                    viewModelEdit.updateUI(
-                        content = it,
-                        updateIt = EditScreenViewModel.UpdateIt.CONTENT
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                placeholder = { Text("Content", style = MaterialTheme.typography.bodyLarge) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = false,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                textStyle = MaterialTheme.typography.bodyLarge
-
-            )
-            TagView(
-                selectedTags.map { it.tagName }.toList()
-            )
-            ElevatedButton(
-                onClick = {
-                    showSheet = true
-                }) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "#Hashtags")
-                }
-            }
-            ElevatedButton(
-                onClick = {
-                    pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                }) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "Add Image")
-                }
-            }
-
-            Button(
-                onClick = onSaveClick,
-                modifier = Modifier.fillMaxWidth()
+        Column(verticalArrangement = Arrangement.SpaceBetween) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(1f)
+                    .padding(horizontal = 4.dp),
             ) {
-                Text("Save Note")
+                key(note.imageUri) {
+                    NemoCarouselComp(
+                        imageList = note.imageUri?.split(",") ?: listOf(),
+                        height = 250.dp,
+                        shadowColor = colors.primary
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                TagView(
+                    selectedTags.map { it.tagName }.toList()
+                )
+                NemoMinimalTextField(
+                    value = note.title,
+                    onValueChange = {
+                        viewModelEdit.updateUI(
+                            title = it,
+                            updateIt = EditScreenViewModel.UpdateIt.TITLE
+                        )
+                    },
+                    placeholderText = "Title",
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 4,
+                    textStyle = MaterialTheme.typography.titleLarge
+                )
+                NemoMinimalTextField(
+                    value = note.content,
+                    onValueChange = {
+                        viewModelEdit.updateUI(
+                            content = it,
+                            updateIt = EditScreenViewModel.UpdateIt.CONTENT
+                        )
+                    },
+                    placeholderText = "Content",
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyLarge
+
+                )
             }
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                NemoButton(
+                    onClick = {
+                        showSheet = true
+                    }) {
+                    Icon(
+                        painter = painterResource(R.drawable.hash),
+                        contentDescription = "Pick Images Icon",
+                        modifier = Modifier.size(24.dp)
+                    )
 
+                }
+                Spacer(Modifier.width(8.dp))
+                NemoButton(
+                    onClick = {
+                        pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    }) {
+                    Icon(
+                        painter = painterResource(R.drawable.images_square),
+                        contentDescription = "Pick Images Icon",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Spacer(Modifier.width(8.dp))
+
+
+            }
         }
     }
 }
@@ -240,94 +215,114 @@ fun NoteInputForm(
 
 @Composable
 fun TagView(tagsList: List<String>) {
-    LazyRow(
+    val colors = LocalCustomColors.current
+    Row(
         modifier = Modifier
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 12.dp)
+            .horizontalScroll(state = rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(items = tagsList, key = { it }) { tag ->
-            FilterChip(
 
-                label = {
-                    Text(text = tag)
-                },
-
-                selected = false,
-                enabled = true,
-                onClick = {
-
-                }
+        tagsList.forEach { tag ->
+            Text(
+                text = "#$tag",
+                fontSize = 18.sp,
+                color = colors.onTertiary,
+                fontFamily = FontFamily(Font(R.font.ibm_plex_mono_regular))
             )
+
         }
     }
 }
 
+
 @Composable
-fun BuildImageSlider(sliderList: List<String> = listOf()) {
-    val pagerState = rememberPagerState(
-        initialPage = 1,
-        initialPageOffsetFraction = 0f
-    ) {
-        // provide pageCount
-        sliderList.size
-    }
+fun NemoMinimalTextField(
+    modifier: Modifier = Modifier,
+    onValueChange: (String) -> Unit,
+    value: String,
+    textStyle: TextStyle,
+    placeholderText: String,
+    maxLines: Int = Int.MAX_VALUE
+) {
+    val colors = LocalCustomColors.current
+    TextField(
+        value = value,
+        onValueChange = { it ->
+            onValueChange(it)
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        placeholder = { Text(placeholderText, style = textStyle) },
+        modifier = modifier,
+        minLines = 1,
+        maxLines = maxLines,
+        colors = TextFieldDefaults.colors(
+            cursorColor = colors.onSecondary,
+            focusedPlaceholderColor = colors.onTertiary,
+            unfocusedPlaceholderColor = colors.onTertiary,
+            focusedTextColor = colors.onPrimary,
+            unfocusedTextColor = colors.onPrimary,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+        ),
+        textStyle = textStyle
+    )
+}
 
-    HorizontalPager(
-        state = pagerState,
-        modifier = Modifier.height(300.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        pageSpacing = 8.dp,
-        pageSize = PageSize.Fill
-    ) { page ->
 
-        Card(
-            colors = CardDefaults.cardColors(Color.Transparent),
-            shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.cardElevation(0.dp),
-            border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .graphicsLayer {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NemoCarouselComp(
+    modifier: Modifier = Modifier,
+    imageList: List<String>,
+    height: Dp,
+    shadowColor: Color,
+    isShadowUpsideDown: Boolean = false
+) {
+    val carouselState = rememberCarouselState { imageList.size }
 
-                    val pageOffset =
-                        (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction.absoluteValue
-                    lerp(
-                        start = 0.85f,
-                        stop = 1f,
-                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                    ).also { scale ->
-                        scaleX = scale
-                        scaleY = scale
-                    }
-//                    alpha = lerp(
-//                        start = 0.70f,
-//                        stop = 1f,
-//                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-//                    )
-                }
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(sliderList[page])
-                    .crossfade(true)
-                    .scale(Scale.FILL)
-                    .build(),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
+    if (imageList.isNotEmpty())
+        HorizontalMultiBrowseCarousel(
+            state = carouselState,
+            preferredItemWidth = 300.dp,
+            modifier = modifier,
+            itemSpacing = 1.dp,
+            flingBehavior = CarouselDefaults.multiBrowseFlingBehavior(state = carouselState),
+        ) { page ->
+
+            Box(
                 modifier = Modifier
-                    .offset {
-                        // Calculate the offset for the current page from the
-                        // scroll position
-                        val pageOffset =
-                            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                        // Then use it as a multiplier to apply an offset
-                        IntOffset(
-                            x = (70.dp * pageOffset).roundToPx(),
-                            y = 0,
+                    .height(height)
+                    .fillMaxWidth()
+            ) {
+                AsyncImage(
+                    modifier = Modifier
+                        .matchParentSize(),
+                    model = imageList[page],
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                )
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = if (isShadowUpsideDown) listOf(
+                                    shadowColor.copy(alpha = 1f),
+                                    Color.Transparent,
+                                ) else listOf(
+                                    Color.Transparent,
+                                    shadowColor.copy(alpha = 1f)
+                                )
+                            )
                         )
-                    }
-            )
+                )
+            }
+
         }
 
-    }
+
 }

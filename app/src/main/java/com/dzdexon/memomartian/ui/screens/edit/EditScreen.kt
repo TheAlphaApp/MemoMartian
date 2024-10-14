@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -16,10 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
+import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 
 object EditScreenDestination : NavigationDestination {
     override val route: String = "edit_screen"
@@ -28,6 +29,7 @@ object EditScreenDestination : NavigationDestination {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreen(
     modifier: Modifier = Modifier,
@@ -39,9 +41,13 @@ fun EditScreen(
 ) {
     Log.d("NEMO: EDITSCREEN", "REBUILD EDIT Screen")
     val uiState by viewModelEdit.uiState
+    val colors = LocalCustomColors.current
     Scaffold(
+        containerColor = colors.primary,
+        contentColor = colors.onPrimary,
         topBar = {
             NoteTopAppBar(
+
                 canNavigateBack = canNavigateBack,
                 navigateUp = {
                     navigateUp()
@@ -60,7 +66,6 @@ fun EditScreen(
 //                        navigateToHome()
                     }) {
                         Icon(Icons.Filled.DeleteForever, contentDescription = "Delete Icon")
-
                     }
                 }
             )
@@ -80,7 +85,6 @@ fun EditScreen(
 //            if (uiState.note.noteId == 0L) {
 //                Toast.makeText(context, "Note not found", Toast.LENGTH_LONG).show()
 //            }
-
             NoteInputForm(
                 selectedTags = uiState.selectedTags,
                 note = uiState.note,

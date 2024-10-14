@@ -25,7 +25,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -40,8 +39,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,11 +51,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dzdexon.memomartian.model.NoteWithTagsModel
 import com.dzdexon.memomartian.model.Tag
@@ -67,6 +61,7 @@ import com.dzdexon.memomartian.navigation.NavigationDestination
 import com.dzdexon.memomartian.ui.shared.component.NoteCard
 import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 import com.dzdexon.memomartian.R
+import com.dzdexon.memomartian.ui.shared.component.NoteTopAppBar
 import com.dzdexon.memomartian.ui.theme.ibmPlexMono
 import com.dzdexon.memomartian.utils.ALL_TAG
 
@@ -113,22 +108,8 @@ fun HomeScreen(
     Scaffold(
         containerColor = colors.primary,
         topBar = {
-            TopAppBar(
-                colors = TopAppBarColors(
-                    containerColor = colors.primary,
-                    scrolledContainerColor = colors.primary,
-                    navigationIconContentColor = colors.onPrimary,
-                    titleContentColor = colors.onPrimary,
-                    actionIconContentColor = colors.onPrimary,
-                ),
-                title = {
-                    Text(
-                        text = "Notes",
-                        fontSize = 32.sp,
-                        fontFamily = FontFamily(Font(R.font.ntype82_headline)),
-                    )
-
-                },
+            NoteTopAppBar(
+                title = "Nemo",
                 actions = {
                     IconButton(onClick = navigateToSearchScreen) {
                         Icon(
@@ -145,7 +126,7 @@ fun HomeScreen(
                             contentDescription = "More Menu"
                         )
                     }
-                }
+                },
             )
         },
         bottomBar = {
