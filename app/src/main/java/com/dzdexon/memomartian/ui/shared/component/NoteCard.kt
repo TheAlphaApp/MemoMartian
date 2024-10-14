@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dzdexon.memomartian.model.Note
 import com.dzdexon.memomartian.model.Tag
-import com.dzdexon.memomartian.ui.screens.edit.NemoCarouselComp
 import com.dzdexon.memomartian.ui.theme.LocalCustomColors
 import com.dzdexon.memomartian.ui.theme.ibmPlexMono
 import com.dzdexon.memomartian.utils.HelperFunctions
@@ -27,6 +26,7 @@ fun NoteCard(
     note: Note,
     tagsList: List<Tag>,
     onClick: (Long) -> Unit,
+    showImages: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     val colors = LocalCustomColors.current
@@ -40,7 +40,6 @@ fun NoteCard(
             disabledContentColor = colors.onTertiary
         ),
         modifier = modifier
-            .padding(4.dp)
             .fillMaxWidth()
             .clickable {
                 onClick(note.noteId)
@@ -95,13 +94,15 @@ fun NoteCard(
                         color = colors.onTertiary
                     )
             }
-            NemoCarouselComp(
-                imageList = note.imageUri?.split(",") ?: listOf(),
-                shadowColor = colors.secondary,
-                isShadowUpsideDown = true,
-                height = 100.dp,
-            )
+            if (showImages)
+                NemoCarouselComp(
+                    imageList = note.imageUri?.split(",") ?: listOf(),
+                    shadowColor = colors.secondary,
+                    isShadowUpsideDown = true,
+                    height = 100.dp,
+                )
         }
     }
+
 }
 

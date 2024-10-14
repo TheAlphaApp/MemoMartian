@@ -33,7 +33,6 @@ object EditScreenDestination : NavigationDestination {
 @Composable
 fun EditScreen(
     modifier: Modifier = Modifier,
-    navigateBack: () -> Unit,
     navigateToHome: () -> Unit,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit,
@@ -47,7 +46,6 @@ fun EditScreen(
         contentColor = colors.onPrimary,
         topBar = {
             NoteTopAppBar(
-
                 canNavigateBack = canNavigateBack,
                 navigateUp = {
                     navigateUp()
@@ -79,19 +77,10 @@ fun EditScreen(
                 CircularProgressIndicator()
             }
         } else {
-//            if (uiState.error != null) {
-//                Toast.makeText(context, uiState.error, Toast.LENGTH_LONG).show()
-//            }
-//            if (uiState.note.noteId == 0L) {
-//                Toast.makeText(context, "Note not found", Toast.LENGTH_LONG).show()
-//            }
             NoteInputForm(
                 selectedTags = uiState.selectedTags,
                 note = uiState.note,
                 viewModelEdit = viewModelEdit,
-                onSaveClick = {
-                    navigateBack()
-                },
                 addTagToNote = { tag ->
                     viewModelEdit.updateTagInNote(tag)
                 },

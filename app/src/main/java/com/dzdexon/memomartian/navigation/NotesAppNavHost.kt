@@ -67,9 +67,6 @@ fun NotesAppNavHost(
             Log.d("NAV", "Navigate to EditScreen")
 
             EditScreen(
-                navigateBack = {
-                    navController.popBackStack()
-                },
                 navigateToHome = {
                     navController.navigate(HomeDestination.route) {
                         popUpTo(HomeDestination.route) {
